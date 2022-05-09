@@ -1,0 +1,2 @@
+USEMODULE += nand
+USEMODULE += nand_onfi
