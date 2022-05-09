@@ -1,0 +1,16 @@
+# Copyright (c) 2022 Jongmin Kim <jmkim@pukyong.ac.kr>
+#
+# This file is subject to the terms and conditions of the GNU Lesser
+# General Public License v2.1. See the file LICENSE in the top level
+# directory for more details.
+#
+menuconfig KCONFIG_USEMODULE_MTD_NAND_ONFI
+    bool "Configure MTD_NAND_ONFI driver"
+    depends on USEMODULE_MTD_NAND_ONFI
+    help
+        Configure the MTD_NAND_ONFI driver using Kconfig.
+
+if KCONFIG_USEMODULE_MTD_NAND_ONFI
+
+endif # KCONFIG_USEMODULE_MTD_NAND_ONFI
+
