@@ -18,7 +18,7 @@
  * @}
  */
 
-#define ENABLE_DEBUG 1
+#define ENABLE_DEBUG 2
 #include "debug.h"
 
 #if defined(ENABLE_DEBUG) && ((ENABLE_DEBUG) <= 1)
@@ -135,7 +135,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
     DEBUG("nand_onfi_run_cmd: nand:%p\r\n",                       nand);
     DEBUG("nand_onfi_run_cmd: cmd:%p\r\n",                        cmd);
     DEBUG("nand_onfi_run_cmd: cmd_params:%p\r\n",                 cmd_params);
-    DEBUG("nand_onfi_run_cmd: err:%p\r\n"                         err);
+    DEBUG("nand_onfi_run_cmd: err:%p\r\n",                        err);
 
     if(cmd == NULL) {
         *err = NAND_ONFI_RW_CMD_INVALID;
@@ -146,11 +146,8 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
         return 0;
     }
 
-    DEBUG("nand_onfi_run_cmd: cmd.length:%u\r\n",                 cmd->length);
     DEBUG("nand_onfi_run_cmd: cmd.pre_hook_cb:%p\r\n",            cmd->pre_hook_cb);
     DEBUG("nand_onfi_run_cmd: cmd.post_hook_cb:%p\r\n",           cmd->post_hook_cb);
-    DEBUG("nand_onfi_run_cmd: cmd.types:%p\r\n",                  cmd->types);
-    DEBUG("nand_onfi_run_cmd: cmd.cycles_chains:%p\r\n",          cmd->cycles_chains);
     DEBUG("nand_onfi_run_cmd: cmd_params.lun_no:%u\r\n",          cmd_params->lun_no);
     DEBUG("nand_onfi_run_cmd: cmd_params.cmd_override:%p\r\n",    cmd_params->cmd_override);
 
@@ -496,7 +493,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                     }
 
                     *current_raw_offset += buffer_size;
-                    DEBUG("nand_onfi_run_cmd: raw-w[%u]: *current_raw_offset:%u (after)\r\n", *buffer_seq, *raw_offset);
+                    DEBUG("nand_onfi_run_cmd: raw-w[%u]: *current_raw_offset:%u (after)\r\n", *current_buffer_seq, *current_raw_offset);
 
                     if(post_hook_cb != NULL) {
                         DEBUG_PUTS("nand_onfi_run_cmd: raw-w[]: post_hook_cb: entry");
@@ -714,7 +711,7 @@ size_t nand_onfi_write_raw(const nand_onfi_t* const nand, const uint16_t* const 
 
     for(size_t seq = 0; seq < data_size; ++seq) {
         DEBUG("nand_onfi_write_raw: seq:%u\r\n", seq);
-        DEBUG("nand_onfi_write_raw: &(raw_data[%u]):%p\r\n", seq, &(raw_data[seq]));
+        DEBUG("nand_onfi_write_raw: &(data[%u]):%p\r\n", seq, &(data[seq]));
         ret_size += nand_onfi_write_cycle(nand, &(data[seq]), cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
     }
 
@@ -1219,7 +1216,7 @@ void nand_onfi_wait(const uint32_t delay_ns) {
 
 bool nand_onfi_wait_until_ready(const nand_onfi_t* const nand, const uint8_t this_lun_no, const uint32_t ready_this_lun_timeout_ns, const uint32_t ready_other_luns_timeout_ns) {
     DEBUG_PUTS("nand_onfi_wait_until_ready: entry");
-    DEBUG("nand_onfi_wait_until_ready: nand:%p this_lun_no:%hu timings:%p\r\n", nand, this_lun_no, timings);
+    DEBUG("nand_onfi_wait_until_ready: nand:%p this_lun_no:%hu\r\n", nand, this_lun_no);
     DEBUG("nand_onfi_wait_until_ready: ready_this_lun_timeout_ns:%" PRId32 "\r\n", ready_this_lun_timeout_ns);
     DEBUG("nand_onfi_wait_until_ready: ready_other_luns_timeout_ns:%" PRId32 "\r\n", ready_other_luns_timeout_ns);
 
