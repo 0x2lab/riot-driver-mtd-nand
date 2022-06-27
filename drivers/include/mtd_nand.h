@@ -22,7 +22,7 @@
 #ifndef MTD_NAND_H
 #define MTD_NAND_H
 
-#include "nand_onfi.h"
+#include "nand/onfi.h"
 #include "mtd.h"
 
 #ifdef __cplusplus
