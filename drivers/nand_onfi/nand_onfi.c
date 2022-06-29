@@ -109,7 +109,6 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                     puts("test1");
                     printf("cmd.chains[%u]: %p\n",            pos, &(cmd->chains[pos]));
                     puts("test2");
-                    while(1) {}
                     printf("chains[%u]: %p\n",                pos, &(chains[pos]));
                     printf("chains[%u].cycles_defined: %s\n", pos, chains[pos].cycles_defined ? "true" : "false");
                     printf("chains[%u].timings: %p\n",        pos, &(chains[pos].timings));
