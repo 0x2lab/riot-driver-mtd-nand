@@ -147,7 +147,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
 
                 if(pre_hook_cb != NULL) {
                     puts("TEST9");
-                    pre_hook_cb(nand, cmd, cmd_params, seq, current_chain);
+                    //pre_hook_cb(nand, cmd, cmd_params, seq, current_chain);
                     puts("TEST10");
                 }
 
