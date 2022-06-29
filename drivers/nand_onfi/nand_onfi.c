@@ -751,8 +751,6 @@ void nand_onfi_wait(const uint32_t delay_ns) {
 bool nand_onfi_wait_until_ready(const nand_onfi_t* const nand, const uint8_t this_lun_no, const uint32_t ready_this_lun_timeout_ns, const uint32_t ready_other_luns_timeout_ns) {
     const uint8_t lun_count = nand->lun_count;
 
-    puts("TEST8");
-
     if(ready_other_luns_timeout_ns > 0) {
         for(uint8_t lun_pos = 0; lun_pos < lun_count; ++lun_pos) {
             if(lun_pos == this_lun_no) {
