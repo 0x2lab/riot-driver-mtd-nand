@@ -94,26 +94,8 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
             for(size_t pos = 0; pos < chains_length; ++pos) {
                 if(cmd_override->chains[pos].cycles_defined || pos >= cmd->chains_length) {
                     memcpy(&(chains[pos]), &(cmd_override->chains[pos]), sizeof(nand_onfi_cmd_chain_t));
-                    puts("TEST1");
-
-                    //printf("copying cmd_override.chains[%d] into chains[%u] ...\n", pos, pos);
-                    //printf("cmd_override.chains[%u]: %p\n",   pos, &(cmd_override->chains[pos]));
-                    //printf("chains[%u]: %p\n",                pos, &(chains[pos]));
-                    //printf("chains[%u].cycles_defined: %s\n", pos, chains[pos].cycles_defined ? "true" : "false");
-                    //printf("chains[%u].timings: %p\n",        pos, &(chains[pos].timings));
-                    //printf("chains[%u].cycles_type: %d\n",    pos, chains[pos].cycles_type);
-                    //while(1) {}
                 } else {
                     memcpy(&(chains[pos]), &(cmd->chains[pos]), sizeof(nand_onfi_cmd_chain_t));
-                    puts("TEST2");
-
-                    //printf("copying cmd.chains[%d] into chains[%u] ...\r\n", pos, pos);
-                    //printf("cmd.chains[%u]: %p\n",            pos, &(cmd->chains[pos]));
-                    //printf("chains[%u]: %p\n",                pos, &(chains[pos]));
-                    //printf("chains[%u].cycles_defined: %s\n", pos, chains[pos].cycles_defined ? "true" : "false");
-                    //printf("chains[%u].timings: %p\n",        pos, &(chains[pos].timings));
-                    //printf("chains[%u].cycles_type: %d\n",    pos, chains[pos].cycles_type);
-                    //while(1) {}
                 }
             }
         }
@@ -125,7 +107,6 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
     nand_onfi_set_write_protect_disable(nand);
     nand_onfi_set_read_disable(nand);
     nand_onfi_set_write_disable(nand);
-    puts("TEST3");
 
     for(size_t seq = 0; seq < chains_length; ++seq) {
               nand_onfi_cmd_chain_t*    const current_chain     = &(chains[seq]);
@@ -134,10 +115,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
         const nand_onfi_cmd_type_t            cycles_type       =   current_chain->cycles_type;
         const nand_onfi_cmd_cycles_t*   const cycles            = &(current_chain->cycles);
 
-        puts("TEST4");
-
         if(! cycles_defined) {
-            puts("TEST5");
             continue;
         }
 
@@ -153,6 +131,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 nand_onfi_set_latch_command(nand);
                 nand_onfi_wait(timings->latch_enable_post_delay_ns);
 
+                puts("TEST7");
                 if(! nand_onfi_wait_until_ready(nand, lun_no, timings->ready_this_lun_timeout_ns, timings->ready_other_luns_timeout_ns)) {
                     nand_onfi_wait(timings->latch_disable_pre_delay_ns);
                     nand_onfi_set_latch_raw(nand);
@@ -162,6 +141,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                     free(chains);
                     return ret_size;
                 } else {
+                    puts("TEST8");
                     nand_onfi_wait(timings->ready_post_delay_ns);
                 }
 
