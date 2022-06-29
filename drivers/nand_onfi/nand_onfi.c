@@ -125,6 +125,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
     nand_onfi_set_write_protect_disable(nand);
     nand_onfi_set_read_disable(nand);
     nand_onfi_set_write_disable(nand);
+    puts("TEST3");
 
     for(size_t seq = 0; seq < chains_length; ++seq) {
               nand_onfi_cmd_chain_t*    const current_chain     = &(chains[seq]);
