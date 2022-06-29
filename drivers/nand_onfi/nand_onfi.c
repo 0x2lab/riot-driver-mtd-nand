@@ -105,7 +105,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 } else {
                     memcpy(&(chains[pos]), &(cmd->chains[pos]), sizeof(nand_onfi_cmd_chain_t));
 
-                    printf("copying cmd.chains[%d] into chains[%u] ...\r\n", pos, pos);
+                    //printf("copying cmd.chains[%d] into chains[%u] ...\r\n", pos, pos);
                     puts("test1");
                     printf("cmd.chains[%u]: %p\r\n",            pos, &(cmd->chains[pos]));
                     puts("test2");
