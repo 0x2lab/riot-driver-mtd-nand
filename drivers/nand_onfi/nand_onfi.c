@@ -101,6 +101,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                     printf("chains[%u].cycles_defined: %s\r\n", pos, chains[pos].cycles_defined ? "true" : "false");
                     printf("chains[%u].timings: %p\r\n",        pos, &(chains[pos].timings));
                     printf("chains[%u].cycles_type: %d\r\n",    pos, chains[pos].cycles_type);
+                    while(1) {}
                 } else {
                     memcpy(&(chains[pos]), &(cmd->chains[pos]), sizeof(nand_onfi_cmd_chain_t));
 
@@ -110,6 +111,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                     printf("chains[%u].cycles_defined: %s\r\n", pos, chains[pos].cycles_defined ? "true" : "false");
                     printf("chains[%u].timings: %p\r\n",        pos, &(chains[pos].timings));
                     printf("chains[%u].cycles_type: %d\r\n",    pos, chains[pos].cycles_type);
+                    while(1) {}
                 }
             }
         }
