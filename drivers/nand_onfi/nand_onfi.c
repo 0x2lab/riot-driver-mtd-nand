@@ -176,6 +176,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 nand_onfi_set_latch_address(nand);
                 nand_onfi_wait(timings->latch_enable_post_delay_ns);
 
+                puts("TEST15");
                 if(! nand_onfi_wait_until_ready(nand, lun_no, timings->ready_this_lun_timeout_ns, timings->ready_other_luns_timeout_ns)) {
                     nand_onfi_wait(timings->latch_disable_pre_delay_ns);
                     nand_onfi_set_latch_raw(nand);
@@ -195,6 +196,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 nand_onfi_set_io_pin_write(nand);
                 ret_size += nand_onfi_write_addr(nand, addr, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
 
+                puts("TEST16");
                 if(post_hook_cb != NULL) {
                     post_hook_cb(nand, cmd, cmd_params, seq, current_chain);
                 }
