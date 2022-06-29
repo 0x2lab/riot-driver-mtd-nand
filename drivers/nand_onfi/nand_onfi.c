@@ -137,10 +137,12 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
         puts("TEST4");
 
         if(! cycles_defined) {
+            puts("TEST5");
             continue;
         }
 
         nand_onfi_wait(timings->pre_delay_ns);
+        puts("TEST6");
         
         switch(cycles_type) {
         case NAND_ONFI_CMD_TYPE_CMD_WRITE:;
