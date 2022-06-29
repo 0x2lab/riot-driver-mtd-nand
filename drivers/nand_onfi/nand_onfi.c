@@ -164,7 +164,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 nand_onfi_wait(timings->latch_disable_pre_delay_ns);
                 nand_onfi_set_latch_raw(nand);
                 nand_onfi_wait(timings->latch_disable_post_delay_ns);
-                puts("TEST7");
+                puts("TEST14");
             }
             break;
 
