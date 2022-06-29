@@ -173,6 +173,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 puts("TEST16");
                 const uint64_t* const addr = cycles->addr;
                 puts("TEST17");
+                while(1) {}
 
                 nand_onfi_wait(timings->latch_enable_pre_delay_ns);
                 puts("TEST18");
