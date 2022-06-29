@@ -146,11 +146,16 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 }
 
                 if(pre_hook_cb != NULL) {
+                    puts("TEST9");
                     pre_hook_cb(nand, cmd, cmd_params, seq, current_chain);
+                    puts("TEST10");
                 }
 
+                puts("TEST11");
                 nand_onfi_set_io_pin_write(nand);
+                puts("TEST12");
                 ret_size += nand_onfi_write_cmd(nand, &command, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                puts("TEST13");
 
                 if(post_hook_cb != NULL) {
                     post_hook_cb(nand, cmd, cmd_params, seq, current_chain);
@@ -764,10 +769,6 @@ bool nand_onfi_wait_until_ready(const nand_onfi_t* const nand, const uint8_t thi
     }
 
     if(ready_this_lun_timeout_ns > 0) {
-        uint8_t test = 0;
-        (void)test;
-        puts("TEST9");
-        while(1) {}
         if(! nand_onfi_wait_until_lun_ready(nand, this_lun_no, ready_this_lun_timeout_ns)) {
             return false; /**< This LUN not ready but timeout */
         }
