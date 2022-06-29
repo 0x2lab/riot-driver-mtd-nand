@@ -752,7 +752,6 @@ bool nand_onfi_wait_until_ready(const nand_onfi_t* const nand, const uint8_t thi
     const uint8_t lun_count = nand->lun_count;
 
     puts("TEST8");
-    while(1) {}
 
     if(ready_other_luns_timeout_ns > 0) {
         for(uint8_t lun_pos = 0; lun_pos < lun_count; ++lun_pos) {
@@ -766,6 +765,7 @@ bool nand_onfi_wait_until_ready(const nand_onfi_t* const nand, const uint8_t thi
         }
     }
     puts("TEST9");
+    while(1) {}
 
     if(ready_this_lun_timeout_ns > 0) {
         if(! nand_onfi_wait_until_lun_ready(nand, this_lun_no, ready_this_lun_timeout_ns)) {
