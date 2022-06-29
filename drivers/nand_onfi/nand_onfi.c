@@ -95,25 +95,25 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 if(cmd_override->chains[pos].cycles_defined || pos >= cmd->chains_length) {
                     memcpy(&(chains[pos]), &(cmd_override->chains[pos]), sizeof(nand_onfi_cmd_chain_t));
 
-                    printf("copying cmd_override.chains[%d] into chains[%u] ...\r\n", pos, pos);
-                    printf("cmd_override.chains[%u]: %p\r\n",   pos, &(cmd_override->chains[pos]));
-                    printf("chains[%u]: %p\r\n",                pos, &(chains[pos]));
-                    printf("chains[%u].cycles_defined: %s\r\n", pos, chains[pos].cycles_defined ? "true" : "false");
-                    printf("chains[%u].timings: %p\r\n",        pos, &(chains[pos].timings));
-                    printf("chains[%u].cycles_type: %d\r\n",    pos, chains[pos].cycles_type);
+                    printf("copying cmd_override.chains[%d] into chains[%u] ...\n", pos, pos);
+                    printf("cmd_override.chains[%u]: %p\n",   pos, &(cmd_override->chains[pos]));
+                    printf("chains[%u]: %p\n",                pos, &(chains[pos]));
+                    printf("chains[%u].cycles_defined: %s\n", pos, chains[pos].cycles_defined ? "true" : "false");
+                    printf("chains[%u].timings: %p\n",        pos, &(chains[pos].timings));
+                    printf("chains[%u].cycles_type: %d\n",    pos, chains[pos].cycles_type);
                     while(1) {}
                 } else {
                     memcpy(&(chains[pos]), &(cmd->chains[pos]), sizeof(nand_onfi_cmd_chain_t));
 
                     //printf("copying cmd.chains[%d] into chains[%u] ...\r\n", pos, pos);
                     puts("test1");
-                    printf("cmd.chains[%u]: %p\r\n",            pos, &(cmd->chains[pos]));
+                    printf("cmd.chains[%u]: %p\n",            pos, &(cmd->chains[pos]));
                     puts("test2");
                     while(1) {}
-                    printf("chains[%u]: %p\r\n",                pos, &(chains[pos]));
-                    printf("chains[%u].cycles_defined: %s\r\n", pos, chains[pos].cycles_defined ? "true" : "false");
-                    printf("chains[%u].timings: %p\r\n",        pos, &(chains[pos].timings));
-                    printf("chains[%u].cycles_type: %d\r\n",    pos, chains[pos].cycles_type);
+                    printf("chains[%u]: %p\n",                pos, &(chains[pos]));
+                    printf("chains[%u].cycles_defined: %s\n", pos, chains[pos].cycles_defined ? "true" : "false");
+                    printf("chains[%u].timings: %p\n",        pos, &(chains[pos].timings));
+                    printf("chains[%u].cycles_type: %d\n",    pos, chains[pos].cycles_type);
                     while(1) {}
                 }
             }
