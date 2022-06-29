@@ -61,7 +61,8 @@ int nand_onfi_init(nand_onfi_t* const nand, nand_onfi_params_t* const params) {
     nand->lun_count = 1;
     nand->bb_per_lun = 0;
     nand->column_addr_cycles = 2;
-    nand->row_addr_cycles = 3;
+    //nand->row_addr_cycles = 3;
+    nand->row_addr_cycles = 1;
     nand->bits_per_cell = 2;
     nand->programs_per_page = 3;
 
