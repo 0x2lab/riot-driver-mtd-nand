@@ -134,6 +134,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
         const nand_onfi_cmd_type_t            cycles_type       =   current_chain->cycles_type;
         const nand_onfi_cmd_cycles_t*   const cycles            = &(current_chain->cycles);
 
+        puts("TEST4");
 
         if(! cycles_defined) {
             continue;
