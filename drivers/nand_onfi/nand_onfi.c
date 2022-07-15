@@ -359,11 +359,17 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
 
         case NAND_ONFI_CMD_TYPE_RAW_READ:;
             {
+                puts("TEST20");
                 nand_onfi_raw_t* const raw                =   cycles->raw;
+                puts("TEST21");
                 size_t*          const raw_size           = &(raw->raw_size);
+                puts("TEST22");
                 uint16_t*        const buffer             =   raw->buffer;
+                puts("TEST23");
                 size_t                 buffer_size        =   raw->buffer_size;
+                puts("TEST24");
                 size_t*          const current_buffer_seq = &(raw->current_buffer_seq);
+                puts("TEST25");
                 size_t*          const current_raw_offset = &(raw->current_raw_offset);
                 puts("TESTA");
 
