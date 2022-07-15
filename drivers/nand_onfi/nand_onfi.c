@@ -305,7 +305,6 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 size_t                 buffer_size        =   raw->buffer_size;
                 size_t*          const current_buffer_seq = &(raw->current_buffer_seq);
                 size_t*          const current_raw_offset = &(raw->current_raw_offset);
-                puts("TESTA");
 
                 if(*raw_size == 0) {
                     *err = NAND_ONFI_RW_OK;
@@ -366,6 +365,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 size_t                 buffer_size        =   raw->buffer_size;
                 size_t*          const current_buffer_seq = &(raw->current_buffer_seq);
                 size_t*          const current_raw_offset = &(raw->current_raw_offset);
+                puts("TESTA");
 
                 if(*raw_size == 0) {
                     *err = NAND_ONFI_RW_OK;
@@ -379,6 +379,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 nand_onfi_wait(timings->latch_enable_pre_delay_ns);
                 nand_onfi_set_latch_raw(nand);
                 nand_onfi_wait(timings->latch_enable_post_delay_ns);
+                puts("TESTB");
 
                 if(! nand_onfi_wait_until_ready(nand, lun_no, timings->ready_this_lun_timeout_ns, timings->ready_other_luns_timeout_ns)) {
                     *err = NAND_ONFI_RW_TIMEOUT;
@@ -387,6 +388,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 } else {
                     nand_onfi_wait(timings->ready_post_delay_ns);
                 }
+                puts("TESTC");
 
                 while(buffer_size > 0 && *current_raw_offset < *raw_size) {
                     if(pre_hook_cb != NULL) {
