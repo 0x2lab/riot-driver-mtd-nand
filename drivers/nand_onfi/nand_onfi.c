@@ -213,6 +213,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
             break;
 
         case NAND_ONFI_CMD_TYPE_ADDR_COLUMN_WRITE:;
+        case NAND_ONFI_CMD_TYPE_ADDR_COLUMN_SINGLE_WRITE:;
             {
                 const uint64_t* const addr_column = &(cycles->addr_column);
 
@@ -237,7 +238,11 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 }
 
                 nand_onfi_set_io_pin_write(nand);
-                ret_size += nand_onfi_write_addr_column(nand, addr_column, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                if(NAND_ONFI_CMD_TYPE_ADDR_COLUMN_SINGLE_WRITE) {
+                    ret_size += nand_onfi_write_addr_column_single(nand, (uint16_t)addr_column, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                } else {
+                    ret_size += nand_onfi_write_addr_column(nand, addr_column, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                }
 
                 if(post_hook_cb != NULL) {
                     post_hook_cb(nand, cmd, cmd_params, seq, current_chain);
@@ -250,6 +255,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
             break;
 
         case NAND_ONFI_CMD_TYPE_ADDR_ROW_WRITE:;
+        case NAND_ONFI_CMD_TYPE_ADDR_ROW_SINGLE_WRITE:;
             {
                 const uint64_t* const addr_row = &(cycles->addr_row);
 
@@ -274,7 +280,11 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 }
 
                 nand_onfi_set_io_pin_write(nand);
-                ret_size += nand_onfi_write_addr_row(nand, addr_row, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                if(NAND_ONFI_CMD_TYPE_ADDR_COLUMN_SINGLE_WRITE) {
+                    ret_size += nand_onfi_write_addr_row_single(nand, (uint16_t)addr_row, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                } else {
+                    ret_size += nand_onfi_write_addr_row(nand, addr_row, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                }
 
                 if(post_hook_cb != NULL) {
                     post_hook_cb(nand, cmd, cmd_params, seq, current_chain);
@@ -447,6 +457,10 @@ size_t nand_onfi_write_addr_column(const nand_onfi_t* const nand, const uint64_t
     return ret_size;
 }
 
+size_t nand_onfi_write_addr_column_single(const nand_onfi_t* const nand, const uint16_t* const addr_column_single_cycle_data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
+    return nand_onfi_write_cycle(nand, &addr_column_single_cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+}
+
 size_t nand_onfi_write_addr_row(const nand_onfi_t* const nand, const uint64_t* const addr_row, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
     size_t ret_size = 0;
     const uint8_t row_addr_cycles = nand->row_addr_cycles;
@@ -458,6 +472,10 @@ size_t nand_onfi_write_addr_row(const nand_onfi_t* const nand, const uint64_t* c
     }
 
     return ret_size;
+}
+
+size_t nand_onfi_write_addr_row_single(const nand_onfi_t* const nand, const uint16_t* const addr_row_single_cycle_data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
+    return nand_onfi_write_cycle(nand, &addr_row_single_cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
 }
 
 size_t nand_onfi_write_raw(const nand_onfi_t* const nand, const uint16_t* const data, const size_t data_size, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {

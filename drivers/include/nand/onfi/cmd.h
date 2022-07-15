@@ -51,7 +51,7 @@ static const nand_onfi_cmd_t NAND_ONFI_CMD_READ_ID = {
             {
                 .cycles_defined         = true,
                 .timings                = NAND_ONFI_CMD_TIMING_ADDR_WRITE_POST_DELAY,
-                .cycles_type            = NAND_ONFI_CMD_TYPE_ADDR_ROW_WRITE,
+                .cycles_type            = NAND_ONFI_CMD_TYPE_ADDR_ROW_SINGLE_WRITE,
                 .cycles                 = { .addr_row = 0x00 }
             },
             {
@@ -75,7 +75,7 @@ static const nand_onfi_cmd_t NAND_ONFI_CMD_READ_ID_ONFI_SIG = {
             {
                 .cycles_defined         = true,
                 .timings                = NAND_ONFI_CMD_TIMING_ADDR_WRITE_POST_DELAY,
-                .cycles_type            = NAND_ONFI_CMD_TYPE_ADDR_ROW_WRITE,
+                .cycles_type            = NAND_ONFI_CMD_TYPE_ADDR_ROW_SINGLE_WRITE,
                 .cycles                 = { .addr_row = 0x20 }
             },
             {
@@ -99,7 +99,7 @@ static const nand_onfi_cmd_t NAND_ONFI_CMD_READ_PARAMETER_PAGE = {
             {
                 .cycles_defined         = true,
                 .timings                = NAND_ONFI_CMD_TIMING_ADDR_WRITE_POST_DELAY,
-                .cycles_type            = NAND_ONFI_CMD_TYPE_ADDR_ROW_WRITE,
+                .cycles_type            = NAND_ONFI_CMD_TYPE_ADDR_ROW_SINGLE_WRITE,
                 .cycles                 = { .addr_row = 0x00 }
             },
             {

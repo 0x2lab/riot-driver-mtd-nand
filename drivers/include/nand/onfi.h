@@ -43,7 +43,9 @@ size_t      nand_onfi_run_cmd(nand_onfi_t * const, const nand_onfi_cmd_t * const
 size_t      nand_onfi_write_cmd(const nand_onfi_t * const, const uint8_t * const, const uint32_t, const uint32_t);
 size_t      nand_onfi_write_addr(const nand_onfi_t * const, const uint64_t [], const uint32_t, const uint32_t);
 size_t      nand_onfi_write_addr_column(const nand_onfi_t * const, const uint64_t * const, const uint32_t, const uint32_t);
+size_t      nand_onfi_write_addr_column_single(const nand_onfi_t* const nand, const uint16_t* const addr_column_single_cycle_data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns);
 size_t      nand_onfi_write_addr_row(const nand_onfi_t * const, const uint64_t * const, const uint32_t, const uint32_t);
+size_t      nand_onfi_write_addr_row_single(const nand_onfi_t* const nand, const uint16_t* const addr_row_single_cycle_data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns);
 size_t      nand_onfi_write_raw(const nand_onfi_t * const, const uint16_t * const, const size_t, const uint32_t, const uint32_t);
 size_t      nand_onfi_write_cycle(const nand_onfi_t * const, const uint16_t * const, const uint32_t, const uint32_t);
 size_t      nand_onfi_write_io(const nand_onfi_t * const, const uint16_t * const, const uint32_t, const uint32_t);
