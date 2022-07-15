@@ -591,7 +591,8 @@ size_t nand_onfi_read_raw(const nand_onfi_t* const nand, uint16_t* const out_buf
 
     print_str("TESTQ\r\n");
     for(size_t seq = 0; seq < buffer_size; ++seq) {
-
+        print_byte_hex(0xF);
+        print_str("\r\n");
         ret_size += nand_onfi_read_cycle(nand, &(out_buffer[seq]), cycle_read_enable_post_delay_ns, cycle_read_disable_post_delay_ns);
         print_str("TESTS\r\n");
     }
