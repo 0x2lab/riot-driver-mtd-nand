@@ -410,26 +410,38 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                         }
                     }
 
+                    print_str("TESTF\r\n");
                     if(buffer != NULL) {
+                        print_str("TESTG\r\n");
+
                         const size_t raw_remaining_size = *raw_size - *current_raw_offset;
+                        print_str("TESTH\r\n");
 
                         buffer_size = (raw_remaining_size > buffer_size) ? buffer_size : raw_remaining_size; /**< Only touch locally, instead of touch the passed param */
+                        print_str("TESTI\r\n");
 
                         nand_onfi_set_io_pin_read(nand);
+                        print_str("TESTJ\r\n");
                         ret_size += nand_onfi_read_raw(nand, buffer, buffer_size, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                        print_str("TESTK\r\n");
 
                         if(raw->buffer_size != buffer_size) {
                             raw->buffer_size = buffer_size; /**< Touch the passed param */
                         }
+                        print_str("TESTL\r\n");
                     }
 
                     *current_raw_offset += buffer_size;
+                    print_str("TESTM\r\n");
 
                     if(post_hook_cb != NULL) {
                         post_hook_cb(nand, cmd, cmd_params, seq, current_chain);
+                        print_str("TESTN\r\n");
                     }
+                    print_str("TESTO\r\n");
 
                     ++(*current_buffer_seq);
+                    print_str("TESTP\r\n");
                 }
             }
             break;
