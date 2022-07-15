@@ -400,7 +400,9 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
 
                 while(buffer_size > 0 && *current_raw_offset < *raw_size) {
                     if(pre_hook_cb != NULL) {
+                        puts("TESTD");
                         pre_hook_cb(nand, cmd, cmd_params, seq, current_chain);
+                        puts("TESTE");
 
                         if(*current_raw_offset >= *raw_size) {
                             break;
