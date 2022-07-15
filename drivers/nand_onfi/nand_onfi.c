@@ -609,12 +609,14 @@ size_t nand_onfi_read_raw(const nand_onfi_t* const nand, uint16_t* const out_buf
 }
 
 size_t nand_onfi_read_cycle(const nand_onfi_t* const nand, uint16_t* const out_cycle_data, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
+    print_str("TEST_READY1\r\n");
     const size_t ret_size = nand_onfi_read_io(nand, out_cycle_data, cycle_read_enable_post_delay_ns, cycle_read_disable_post_delay_ns);
+    print_str("TEST_END1\r\n");
     return ret_size;
 }
 
 size_t nand_onfi_read_io(const nand_onfi_t* const nand, uint16_t* const out_data, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
-    print_str("TEST_READY\r\n");
+    print_str("TEST_READY2\r\n");
     *out_data = 0;
     print_str("TEST_RE\r\n");
     nand_onfi_set_read_enable(nand);
