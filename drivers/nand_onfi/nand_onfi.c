@@ -589,9 +589,13 @@ size_t nand_onfi_write_io(const nand_onfi_t* const nand, const uint16_t* const d
 size_t nand_onfi_read_raw(const nand_onfi_t* const nand, uint16_t* const out_buffer, const size_t buffer_size, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
     size_t ret_size = 0;
 
+    print_str("TESTQ\r\n");
     for(size_t seq = 0; seq < buffer_size; ++seq) {
+        print_str("TESTR\r\n");
         ret_size += nand_onfi_read_cycle(nand, &(out_buffer[seq]), cycle_read_enable_post_delay_ns, cycle_read_disable_post_delay_ns);
+        print_str("TESTS\r\n");
     }
+    print_str("TESTT\r\n");
 
     return ret_size;
 }
