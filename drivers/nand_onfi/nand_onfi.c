@@ -305,6 +305,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 size_t                 buffer_size        =   raw->buffer_size;
                 size_t*          const current_buffer_seq = &(raw->current_buffer_seq);
                 size_t*          const current_raw_offset = &(raw->current_raw_offset);
+                puts("TESTA");
 
                 if(*raw_size == 0) {
                     *err = NAND_ONFI_RW_OK;
