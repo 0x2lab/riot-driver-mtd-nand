@@ -122,7 +122,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
         }
 
         nand_onfi_wait(timings->pre_delay_ns);
-        print_str("TEST6");
+        print_str("TEST6\r\n");
         
         switch(cycles_type) {
         case NAND_ONFI_CMD_TYPE_CMD_WRITE:;
@@ -133,7 +133,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 nand_onfi_set_latch_command(nand);
                 nand_onfi_wait(timings->latch_enable_post_delay_ns);
 
-                print_str("TEST7");
+                print_str("TEST7\r\n");
                 if(! nand_onfi_wait_until_ready(nand, lun_no, timings->ready_this_lun_timeout_ns, timings->ready_other_luns_timeout_ns)) {
                     nand_onfi_wait(timings->latch_disable_pre_delay_ns);
                     nand_onfi_set_latch_raw(nand);
@@ -143,21 +143,21 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                     free(chains);
                     return ret_size;
                 } else {
-                    print_str("TEST8");
+                    print_str("TEST8\r\n");
                     nand_onfi_wait(timings->ready_post_delay_ns);
                 }
 
                 if(pre_hook_cb != NULL) {
-                    print_str("TEST9");
+                    print_str("TEST9\r\n");
                     pre_hook_cb(nand, cmd, cmd_params, seq, current_chain);
-                    print_str("TEST10");
+                    print_str("TEST10\r\n");
                 }
 
-                print_str("TEST11");
+                print_str("TEST11\r\n");
                 nand_onfi_set_io_pin_write(nand);
-                print_str("TEST12");
+                print_str("TEST12\r\n");
                 ret_size += nand_onfi_write_cmd(nand, &command, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
-                print_str("TEST13");
+                print_str("TEST13\r\n");
 
                 if(post_hook_cb != NULL) {
                     post_hook_cb(nand, cmd, cmd_params, seq, current_chain);
@@ -166,23 +166,23 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 nand_onfi_wait(timings->latch_disable_pre_delay_ns);
                 nand_onfi_set_latch_raw(nand);
                 nand_onfi_wait(timings->latch_disable_post_delay_ns);
-                print_str("TEST14");
+                print_str("TEST14\r\n");
             }
             break;
 
         case NAND_ONFI_CMD_TYPE_ADDR_WRITE:;
             {
-                print_str("TEST16");
+                print_str("TEST16\r\n");
                 const uint64_t* const addr = cycles->addr;
-                print_str("TEST17");
+                print_str("TEST17\r\n");
                 while(1) {}
 
                 nand_onfi_wait(timings->latch_enable_pre_delay_ns);
-                print_str("TEST18");
+                print_str("TEST18\r\n");
                 nand_onfi_set_latch_address(nand);
                 nand_onfi_wait(timings->latch_enable_post_delay_ns);
 
-                print_str("TEST15");
+                print_str("TEST15\r\n");
                 if(! nand_onfi_wait_until_ready(nand, lun_no, timings->ready_this_lun_timeout_ns, timings->ready_other_luns_timeout_ns)) {
                     nand_onfi_wait(timings->latch_disable_pre_delay_ns);
                     nand_onfi_set_latch_raw(nand);
@@ -202,7 +202,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 nand_onfi_set_io_pin_write(nand);
                 ret_size += nand_onfi_write_addr(nand, addr, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
 
-                print_str("TEST16");
+                print_str("TEST19\r\n");
                 if(post_hook_cb != NULL) {
                     post_hook_cb(nand, cmd, cmd_params, seq, current_chain);
                 }
@@ -362,19 +362,19 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
 
         case NAND_ONFI_CMD_TYPE_RAW_READ:;
             {
-                print_str("TEST20");
+                print_str("TEST20\r\n");
                 nand_onfi_raw_t* const raw                =   cycles->raw;
-                print_str("TEST21");
+                print_str("TEST21\r\n");
                 size_t*          const raw_size           = &(raw->raw_size);
-                print_str("TEST22");
+                print_str("TEST22\r\n");
                 uint16_t*        const buffer             =   raw->buffer;
-                print_str("TEST23");
+                print_str("TEST23\r\n");
                 size_t                 buffer_size        =   raw->buffer_size;
-                print_str("TEST24");
+                print_str("TEST24\r\n");
                 size_t*          const current_buffer_seq = &(raw->current_buffer_seq);
-                print_str("TEST25");
+                print_str("TEST25\r\n");
                 size_t*          const current_raw_offset = &(raw->current_raw_offset);
-                print_str("TESTA");
+                print_str("TESTA\r\n");
 
                 if(*raw_size == 0) {
                     *err = NAND_ONFI_RW_OK;
@@ -388,7 +388,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 nand_onfi_wait(timings->latch_enable_pre_delay_ns);
                 nand_onfi_set_latch_raw(nand);
                 nand_onfi_wait(timings->latch_enable_post_delay_ns);
-                print_str("TESTB");
+                print_str("TESTB\r\n");
 
                 if(! nand_onfi_wait_until_ready(nand, lun_no, timings->ready_this_lun_timeout_ns, timings->ready_other_luns_timeout_ns)) {
                     *err = NAND_ONFI_RW_TIMEOUT;
@@ -397,13 +397,13 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 } else {
                     nand_onfi_wait(timings->ready_post_delay_ns);
                 }
-                print_str("TESTC");
+                print_str("TESTC\r\n");
 
                 while(buffer_size > 0 && *current_raw_offset < *raw_size) {
                     if(pre_hook_cb != NULL) {
-                        print_str("TESTD");
+                        print_str("TESTD\r\n");
                         pre_hook_cb(nand, cmd, cmd_params, seq, current_chain);
-                        print_str("TESTE");
+                        print_str("TESTE\r\n");
 
                         if(*current_raw_offset >= *raw_size) {
                             break;
