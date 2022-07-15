@@ -25,6 +25,7 @@
 #include "periph/spi.h"
 #include "periph/gpio.h"
 #include "ztimer.h"
+#include "fmt.h"
 
 #include "nand/onfi/msb.h"
 #include "nand/onfi/enums.h"

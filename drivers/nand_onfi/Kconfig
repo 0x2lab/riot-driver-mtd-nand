@@ -12,6 +12,7 @@ config MODULE_NAND_ONFI
     select MODULE_PERIPH_GPIO
     select MODULE_ZTIMER
     select ZTIMER_USEC
+    select MODULE_FMT
 
 config HAVE_NAND_ONFI
     bool
