@@ -610,30 +610,46 @@ size_t nand_onfi_read_io(const nand_onfi_t* const nand, uint16_t* const out_data
     nand_onfi_set_read_enable(nand);
 
     if(cycle_read_enable_post_delay_ns > 0) {
+        print_str("TEST_WAIT\r\n");
         nand_onfi_wait(cycle_read_enable_post_delay_ns);
     }
 
     if(nand->data_bus_width == 16) {
+        print_str("READ15\r\n");
         const bool io15 = gpio_read(nand->params.io15) != 0;
+        print_str("READ14\r\n");
         const bool io14 = gpio_read(nand->params.io14) != 0;
+        print_str("READ13\r\n");
         const bool io13 = gpio_read(nand->params.io13) != 0;
+        print_str("READ12\r\n");
         const bool io12 = gpio_read(nand->params.io12) != 0;
+        print_str("READ11\r\n");
         const bool io11 = gpio_read(nand->params.io11) != 0;
+        print_str("READ10\r\n");
         const bool io10 = gpio_read(nand->params.io10) != 0;
+        print_str("READ9\r\n");
         const bool io9 = gpio_read(nand->params.io9) != 0;
+        print_str("READ8\r\n");
         const bool io8 = gpio_read(nand->params.io8) != 0;
 
         *out_data = (io15 << 15) | (io14 << 14) | (io13 << 13) | (io12 << 12) | (io11 << 11) | (io10 << 10) | (io9 << 9) | (io8 << 8);
     }
 
-
+    print_str("READ7\r\n");
     const bool io7 = gpio_read(nand->params.io7) != 0;
+    print_str("READ6\r\n");
     const bool io6 = gpio_read(nand->params.io6) != 0;
+    print_str("READ5\r\n");
     const bool io5 = gpio_read(nand->params.io5) != 0;
+    print_str("READ4\r\n");
     const bool io4 = gpio_read(nand->params.io4) != 0;
+    print_str("READ3\r\n");
     const bool io3 = gpio_read(nand->params.io3) != 0;
+    print_str("READ2\r\n");
     const bool io2 = gpio_read(nand->params.io2) != 0;
+    print_str("READ1\r\n");
     const bool io1 = gpio_read(nand->params.io1) != 0;
+    print_str("READ0\r\n");
     const bool io0 = gpio_read(nand->params.io0) != 0;
 
     *out_data = *out_data | (io7 << 7) | (io6 << 6) | (io5 << 5) | (io4 << 4) | (io3 << 3) | (io2 << 2) | (io1 << 1) | io0;
