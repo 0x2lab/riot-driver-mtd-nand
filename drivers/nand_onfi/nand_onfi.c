@@ -611,7 +611,7 @@ size_t nand_onfi_read_cycle(const nand_onfi_t* const nand, uint16_t* const out_c
     print_str("\r\n");
     print_u32_hex((uint32_t)a);
     print_str("\r\n");
-    print_u32_hex((uint32_t)(uintptr_t)nand);
+    print_u32_hex((const uint32_t)(const uintptr_t)nand);
     print_str("\r\n");
     return 0;
     print_str("TEST_READYX\r\n");
