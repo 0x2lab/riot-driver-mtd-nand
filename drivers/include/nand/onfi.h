@@ -225,11 +225,11 @@ inline uint64_t nand_onfi_addr_to_addr_flat(const nand_onfi_t* const nand, const
     return addr_row * nand_onfi_one_page_size(nand) + addr_column;
 }
 
-inline uint32_t nand_onfi_deadline_from_interval(const uint32_t interval_ns) {
+static inline uint32_t nand_onfi_deadline_from_interval(const uint32_t interval_ns) {
     return ztimer_now(ZTIMER_USEC) + (interval_ns / NAND_ONFI_TIMING_MICROSEC(1));
 }
 
-inline uint32_t nand_onfi_deadline_left(const uint32_t deadline) {
+static inline uint32_t nand_onfi_deadline_left(const uint32_t deadline) {
     int32_t left = (int32_t)(deadline - ztimer_now(ZTIMER_USEC));
     return (left < 0) ? 0 : (uint32_t)left;
 }
