@@ -613,6 +613,7 @@ size_t nand_onfi_read_raw(const nand_onfi_t* const nand, uint16_t* const out_buf
 
 size_t nand_onfi_read_cycle(const nand_onfi_t* const nand, uint16_t* const out_cycle_data, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
     print_str("TEST_READY1\r\n");
+    print_str("TEST_READYX\r\n");
     print_u32_hex((uint32_t)(uintptr_t)out_cycle_data);
     print_str("\r\n");
     print_u32_hex((uint32_t)*out_cycle_data);
