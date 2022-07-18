@@ -249,6 +249,8 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
                             fflush(stdout);
                             nand_set_io_pin_read(nand);
                             print_u32_hex((uint32_t)(uintptr_t)buffer);
+                            print_str("\r\n");
+                            fflush(stdout);
                             return 0;
                             {
                                 rw_size += nand_read_raw(nand, buffer, buffer_size, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
