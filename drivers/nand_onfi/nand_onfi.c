@@ -257,6 +257,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
 
                         case NAND_CMD_TYPE_RAW_READ:
                             {
+                                return 0;
                                 print_u32_hex((uint32_t)(uintptr_t)raw);
                                 print_str("\r\n");
                                 fflush(stdout);
