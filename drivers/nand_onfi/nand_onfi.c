@@ -440,6 +440,8 @@ size_t nand_onfi_write_addr_row(const nand_onfi_t* const nand, const uint64_t* c
         const uint64_t mask = ((1 << NAND_ONFI_ADDR_IO_BITS) - 1) << (NAND_ONFI_ADDR_IO_BITS * seq);
         const uint16_t cycle_data = *addr_row & mask;
         ret_size += nand_onfi_write_cycle(nand, &cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+        print_u32_hex((uint32_t)(uintptr_t)nand);
+        print_str("\r\n");
     }
 
     return ret_size;
