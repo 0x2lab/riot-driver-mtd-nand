@@ -266,6 +266,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
                                 print_u32_hex((uint32_t)(uintptr_t)raw);
                                 print_str("\r\n");
                                 fflush(stdout);
+                                return 0;
                                 print_u32_dec(buffer_size);
                                 print_str("\r\n");
                                 fflush(stdout);
