@@ -676,4 +676,3 @@ bool nand_onfi_wait_until_lun_ready(const nand_onfi_t* const nand, const uint8_t
 
     return false; /**< Not ready but timeout */
 }
-
