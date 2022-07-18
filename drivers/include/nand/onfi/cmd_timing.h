@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "nand/onfi/constants_timing.h"
+#include "nand/onfi/timing.h"
 
 #define NAND_ONFI_CMD_TIMING_IGNORE {                                 \
     .pre_delay_ns                       = NAND_ONFI_TIMING_IGNORE   , \

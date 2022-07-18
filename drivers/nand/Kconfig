@@ -7,9 +7,13 @@
 
 config MODULE_NAND
     bool "NAND"
+    depends on HAS_PERIPH_GPIO
     depends on TEST_KCONFIG
+    select MODULE_PERIPH_GPIO
+    select MODULE_ZTIMER
+    select ZTIMER_USEC
 
-config HAVE_NAND
+config HAS_NAND
     bool
     help
       Indicates that a NAND is present.

@@ -30,206 +30,116 @@ extern "C" {
 #include <stddef.h>
 #include <stdint.h>
 
-#include "nand/onfi/msb.h"
-#include "nand/onfi/enums.h"
-#include "nand/onfi/constants.h"
-#include "nand/onfi/constants_timing.h"
-#include "nand/onfi/types.h"
-#include "nand/onfi/cmd.h"
+#include "nand.h"
+#include "nand/onfi/timing.h"
 #include "nand/onfi/cmd_timing.h"
-#include "ztimer.h"
+#include "nand/onfi/cmd.h"
 
-int nand_onfi_init(nand_onfi_t* const nand, nand_onfi_params_t* const params);
-size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const cmd, nand_onfi_cmd_params_t* const cmd_params, nand_onfi_rw_response_t* const err);
-size_t nand_onfi_write_addr_column(const nand_onfi_t* const nand, const uint64_t* const addr_column, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns);
-size_t nand_onfi_write_addr_row(const nand_onfi_t* const nand, const uint64_t* const addr_row, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns);
-size_t nand_onfi_write_io(const nand_onfi_t* const nand, const uint16_t* const data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns);
-size_t nand_onfi_read_io(const nand_onfi_t* const nand, uint16_t* const out_data, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns);
-void nand_onfi_set_ctrl_pin(const nand_onfi_t* const nand);
-void nand_onfi_set_io_pin_write(const nand_onfi_t* const nand);
-void nand_onfi_set_io_pin_read(const nand_onfi_t* const nand);
-bool nand_onfi_wait_until_ready(const nand_onfi_t* const nand, const uint8_t this_lun_no, const uint32_t ready_this_lun_timeout_ns, const uint32_t ready_other_luns_timeout_ns);
-bool nand_onfi_wait_until_lun_ready(const nand_onfi_t* const nand, const uint8_t this_lun_no, const uint32_t timeout_ns);
+#define NAND_ONFI_MAX_UNIQUE_ID_SIZE             (512)
+#define NAND_ONFI_MAX_PARAMETER_PAGE_SIZE        (8192 + 256)      /**< ONFI states standard as 0-767 */
 
-static inline size_t nand_onfi_write_cycle(const nand_onfi_t* const nand, const uint16_t* const cycle_data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
-    return nand_onfi_write_io(nand, cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
-}
+/**
+ * @brief   version type of ONFI
+ */
+typedef enum {
+    NAND_ONFI_V10 = 10,         /**< ONFI version 1.0 */
+    NAND_ONFI_V20 = 20,         /**< ONFI version 2.0 */
+    NAND_ONFI_V21 = 21,         /**< ONFI version 2.1 */
+    NAND_ONFI_V22 = 22,         /**< ONFI version 2.2 */
+    NAND_ONFI_V23 = 23,         /**< ONFI version 2.3 */
+    NAND_ONFI_V30 = 30,         /**< ONFI version 3.0 */
+    NAND_ONFI_V31 = 31,         /**< ONFI version 3.1 */
+    NAND_ONFI_V32 = 32,         /**< ONFI version 3.2 */
+    NAND_ONFI_V40 = 40,         /**< ONFI version 4.0 */
+    NAND_ONFI_V50 = 50          /**< ONFI version 5.0 */
+} nand_onfi_version_t;
 
-static inline size_t nand_onfi_write_raw(const nand_onfi_t* const nand, const uint16_t* const data, const size_t data_size, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
-    size_t ret_size = 0;
+typedef struct {
+    /* revision information and features block */
+    /* 'O' 'N' 'F' 'I'  */
+    uint8_t  sig[4];
+    uint16_t revision;
+    uint16_t features;
+    uint16_t opt_cmd;
+    uint8_t  reserved0[2];
+    uint16_t ext_param_page_length; /**< since ONFI 2.1 */
+    uint8_t  num_of_param_pages;    /**< since ONFI 2.1 */
+    uint8_t  reserved1[17];
 
-    for(size_t seq = 0; seq < data_size; ++seq) {
-        ret_size += nand_onfi_write_cycle(nand, &(data[seq]), cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
-    }
+    /* manufacturer information block */
+    char     manufacturer[12];
+    char     model[20];
+    uint8_t  jedec_id;
+    uint16_t date_code;
+    uint8_t  reserved2[13];
 
-    return ret_size;
-}
+    /* memory organization block */
+    uint32_t byte_per_page;
+    uint16_t spare_bytes_per_page;
+    uint32_t data_bytes_per_ppage;
+    uint16_t spare_bytes_per_ppage;
+    uint32_t pages_per_block;
+    uint32_t blocks_per_lun;
+    uint8_t  lun_count;
+    uint8_t  addr_cycles;
+    uint8_t  bits_per_cell;
+    uint16_t bb_per_lun;
+    uint16_t block_endurance;
+    uint8_t  guaranteed_good_blocks;
+    uint16_t guaranteed_block_endurance;
+    uint8_t  programs_per_page;
+    uint8_t  ppage_attr;
+    uint8_t  ecc_bits;
+    uint8_t  interleaved_bits;
+    uint8_t  interleaved_ops;
+    uint8_t  reserved3[13];
 
-static inline size_t nand_onfi_write_cmd(const nand_onfi_t* const nand, const uint8_t* const cmd, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
-    uint16_t cmd_aligned = (uint16_t)(*cmd);
-    return nand_onfi_write_cycle(nand, &cmd_aligned, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns); 
-}
+    /* electrical parameter block */
+    uint8_t  io_pin_capacitance_max;
+    uint16_t sdr_timing_modes;
+    uint16_t program_cache_timing_mode;
+    uint16_t t_prog;
+    uint16_t t_bers;
+    uint16_t t_r;
+    uint16_t t_ccs;
+    uint8_t  nvddr_timing_modes;
+    uint8_t  nvddr2_timing_modes;
+    uint8_t  nvddr_nvddr2_features;
+    uint16_t clk_pin_capacitance_typ;
+    uint16_t io_pin_capacitance_typ;
+    uint16_t input_pin_capacitance_typ;
+    uint8_t  input_pin_capacitance_max;
+    uint8_t  driver_strength_support;
+    uint16_t t_int_r;
+    uint16_t t_adl;
+    uint8_t  reserved4[8];
 
-static inline size_t nand_onfi_write_addr(const nand_onfi_t* const nand, const uint64_t addr[], const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
-    size_t ret_size = 0;
-    ret_size += nand_onfi_write_addr_column(nand, &(addr[NAND_ONFI_ADDR_INDEX_COLUMN]), cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
-    ret_size += nand_onfi_write_addr_row(nand, &(addr[NAND_ONFI_ADDR_INDEX_ROW]), cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
-    return ret_size;
-}
+    /* vendor */
+    uint16_t vendor_revision;
+    uint8_t  vendor[88];
 
-static inline size_t nand_onfi_write_addr_single(const nand_onfi_t* const nand, const uint16_t* const addr_single_cycle_data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
-    return nand_onfi_write_cycle(nand, addr_single_cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
-}
+    uint16_t crc;
+} nand_onfi_chip_t;
 
-static inline size_t nand_onfi_read_cycle(const nand_onfi_t* const nand, uint16_t* const out_cycle_data, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
-    return nand_onfi_read_io(nand, out_cycle_data, cycle_read_enable_post_delay_ns, cycle_read_disable_post_delay_ns);
-}
+typedef struct {
+    nand_onfi_version_t version;            /**< ONFI version (BCD encoded), 0 if ONFI is not supported */
+    uint16_t            t_prog;             /**< Page program time */
+    uint16_t            t_bers;             /**< Block erase time */
+    uint16_t            t_r;                /**< Page read time */
+    uint16_t            t_ccs;              /**< Change column setup time */
+    bool                fast_t_cad;         /**< Command/Address/Data slow or fast delay (NV-DDR only) */
+    uint16_t            sdr_timing_modes;   /**< Supported asynchronous/SDR timing modes */
+    uint16_t            nvddr_timing_modes; /**< Supported source synchronous/NV-DDR timing modes */
+} nand_onfi_prop_t;
 
-static inline size_t nand_onfi_read_raw(const nand_onfi_t* const nand, uint16_t* const out_buffer, const size_t buffer_size, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
-    size_t ret_size = 0;
+typedef struct {
+    nand_t              nand;
+    nand_onfi_chip_t    onfi_chip;
+    nand_onfi_prop_t    onfi_prop;
+} nand_onfi_t;
 
-    for(size_t seq = 0; seq < buffer_size; ++seq) {
-        ret_size += nand_onfi_read_cycle(nand, &(out_buffer[seq]), cycle_read_enable_post_delay_ns, cycle_read_disable_post_delay_ns);
-    }
-
-    return ret_size;
-}
-
-static inline void nand_onfi_set_pin_default(const nand_onfi_t* const nand) {
-    nand_onfi_set_ctrl_pin(nand);
-    nand_onfi_set_io_pin_write(nand);
-}
-
-static inline void nand_onfi_set_latch_command(const nand_onfi_t* const nand) {
-    gpio_write(nand->params.ale, 0);
-    gpio_write(nand->params.cle, 1);
-}
-
-static inline void nand_onfi_set_latch_address(const nand_onfi_t* const nand) {
-    gpio_write(nand->params.cle, 0);
-    gpio_write(nand->params.ale, 1);
-}
-
-static inline void nand_onfi_set_latch_raw(const nand_onfi_t* const nand) {
-    gpio_write(nand->params.cle, 0);
-    gpio_write(nand->params.ale, 0);
-}
-
-static inline void nand_onfi_set_read_enable(const nand_onfi_t* const nand) {
-    gpio_write(nand->params.re, 0);
-}
-
-static inline void nand_onfi_set_read_disable(const nand_onfi_t* const nand) {
-    gpio_write(nand->params.re, 1);
-}
-
-static inline void nand_onfi_set_write_enable(const nand_onfi_t* const nand) {
-    gpio_write(nand->params.we, 0);
-}
-
-static inline void nand_onfi_set_write_disable(const nand_onfi_t* const nand) {
-    gpio_write(nand->params.we, 1);
-}
-
-static inline void nand_onfi_set_write_protect_enable(const nand_onfi_t* const nand) {
-    gpio_write(nand->params.wp, 0);
-}
-
-static inline void nand_onfi_set_write_protect_disable(const nand_onfi_t* const nand) {
-    gpio_write(nand->params.wp, 1);
-}
-
-static inline void nand_onfi_set_chip_enable(const nand_onfi_t* const nand, const uint8_t lun_no) {
-    switch(lun_no) {
-    case 0:
-        gpio_write(nand->params.ce0, 0);
-        break;
-    case 1:
-        gpio_write(nand->params.ce1, 0);
-        break;
-    case 2:
-        gpio_write(nand->params.ce2, 0);
-        break;
-    case 3:
-        gpio_write(nand->params.ce3, 0);
-        break;
-    }
-
-}
-
-static inline void nand_onfi_set_chip_disable(const nand_onfi_t* const nand, const uint8_t lun_no) {
-    switch(lun_no) {
-    case 0:
-        gpio_write(nand->params.ce0, 1);
-        break;
-    case 1:
-        gpio_write(nand->params.ce1, 1);
-        break;
-    case 2:
-        gpio_write(nand->params.ce2, 1);
-        break;
-    case 3:
-        gpio_write(nand->params.ce3, 1);
-        break;
-    }
-
-}
-
-static inline void nand_onfi_wait(const uint32_t delay_ns) {
-    if(delay_ns != 0) {
-        /* TODO: ztimer_sleep not working */
-        //ztimer_sleep(ZTIMER_USEC, delay_ns / NAND_ONFI_TIMING_MICROSEC(1));
-    }
-}
-
-static inline size_t nand_onfi_all_pages_count(const nand_onfi_t* const nand) {
-    return nand->pages_per_block * nand->blocks_per_lun * nand->lun_count;
-}
-
-static inline size_t nand_onfi_one_page_size(const nand_onfi_t* const nand) {
-    return nand->data_bytes_per_page + nand->spare_bytes_per_page;
-}
-
-static inline size_t nand_onfi_all_data_bytes_size(const nand_onfi_t* const nand) {
-    return nand->data_bytes_per_page * nand_onfi_all_pages_count(nand);
-}
-
-static inline size_t nand_onfi_all_spare_bytes_size(const nand_onfi_t* const nand) {
-    return nand->spare_bytes_per_page * nand_onfi_all_pages_count(nand);
-}
-
-static inline size_t nand_onfi_all_pages_size(const nand_onfi_t* const nand) {
-    return nand_onfi_all_data_bytes_size(nand) + nand_onfi_all_spare_bytes_size(nand);
-}
-
-static inline uint64_t nand_onfi_offset_to_addr_column(const uint64_t offset) {
-    return offset;
-}
-
-static inline uint64_t nand_onfi_page_num_to_addr_row(const uint64_t page_num) {
-    return page_num;
-}
-
-static inline uint64_t nand_onfi_addr_flat_to_addr_column(const nand_onfi_t* const nand, const uint64_t addr_flat) {
-    return addr_flat % nand_onfi_one_page_size(nand);
-}
-
-static inline uint64_t nand_onfi_addr_flat_to_addr_row(const nand_onfi_t* const nand, const uint64_t addr_flat) {
-    return addr_flat / nand_onfi_one_page_size(nand);
-}
-
-static inline uint64_t nand_onfi_addr_to_addr_flat(const nand_onfi_t* const nand, const uint64_t addr_row, const uint64_t addr_column) {
-    return addr_row * nand_onfi_one_page_size(nand) + addr_column;
-}
-
-static inline uint32_t nand_onfi_deadline_from_interval(const uint32_t interval_ns) {
-    return ztimer_now(ZTIMER_USEC) + (interval_ns / NAND_ONFI_TIMING_MICROSEC(1));
-}
-
-static inline uint32_t nand_onfi_deadline_left(const uint32_t deadline) {
-    int32_t left = (int32_t)(deadline - ztimer_now(ZTIMER_USEC));
-    return (left < 0) ? 0 : (uint32_t)left;
-}
+int nand_onfi_init(nand_onfi_t* const nand, nand_params_t* const params);
+size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_cmd_t* const cmd, nand_cmd_params_t* const cmd_params, nand_rw_response_t* const err);
 
 #ifdef __cplusplus
 }

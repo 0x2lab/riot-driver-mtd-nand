@@ -7,13 +7,11 @@
 
 config MODULE_NAND_ONFI
     bool "ONFI NAND"
-    depends on HAS_PERIPH_GPIO
+    depends on HAS_NAND
     depends on TEST_KCONFIG
-    select MODULE_PERIPH_GPIO
-    select MODULE_ZTIMER
-    select ZTIMER_USEC
+    select MODULE_NAND
 
-config HAVE_NAND_ONFI
+config HAS_NAND_ONFI
     bool
     help
       Indicates that a ONFI NAND is present.
