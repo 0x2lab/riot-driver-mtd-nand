@@ -472,15 +472,21 @@ size_t nand_onfi_write_addr_row(const nand_onfi_t* const nand, const uint64_t* c
 
 size_t nand_onfi_write_io(const nand_onfi_t* const nand, const uint16_t* const data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
     print_str("nand_onfi_write_io: ");
+    fflush(stdout);
     print_u32_hex((uint32_t)(uintptr_t)nand);
+    fflush(stdout);
     print_str("\r\n");
+    fflush(stdout);
+
     nand_onfi_set_write_enable(nand);
     print_str("nand_onfi_write_io: TEST1\r\n");
+    fflush(stdout);
 
     if(cycle_write_enable_post_delay_ns > 0) {
         nand_onfi_wait(cycle_write_enable_post_delay_ns);
     }
     print_str("nand_onfi_write_io: TEST2\r\n");
+    fflush(stdout);
 
     if(nand->data_bus_width == 16) {
         gpio_write(nand->params.io15, (*data & NAND_ONFI_MSB15) ? 1 : 0);
@@ -492,6 +498,7 @@ size_t nand_onfi_write_io(const nand_onfi_t* const nand, const uint16_t* const d
         gpio_write(nand->params.io9, (*data & NAND_ONFI_MSB9) ? 1 : 0);
         gpio_write(nand->params.io8, (*data & NAND_ONFI_MSB8) ? 1 : 0);
         print_str("nand_onfi_write_io: TEST3\r\n");
+        fflush(stdout);
     }
 
     gpio_write(nand->params.io7, (*data & NAND_ONFI_MSB7) ? 1 : 0);
@@ -503,15 +510,19 @@ size_t nand_onfi_write_io(const nand_onfi_t* const nand, const uint16_t* const d
     gpio_write(nand->params.io1, (*data & NAND_ONFI_MSB1) ? 1 : 0);
     gpio_write(nand->params.io0, (*data & NAND_ONFI_MSB0) ? 1 : 0);
     print_str("nand_onfi_write_io: TEST4\r\n");
+    fflush(stdout);
 
     nand_onfi_set_write_disable(nand);
     print_str("nand_onfi_write_io: TEST5\r\n");
+    fflush(stdout);
 
     if(cycle_write_disable_post_delay_ns > 0) {
         nand_onfi_wait(cycle_write_disable_post_delay_ns);
         print_str("nand_onfi_write_io: TEST6\r\n");
+        fflush(stdout);
     }
     print_str("nand_onfi_write_io: TEST7\r\n");
+    fflush(stdout);
 
     return 1;
 }
