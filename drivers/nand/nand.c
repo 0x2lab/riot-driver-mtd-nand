@@ -317,6 +317,18 @@ bool nand_wait_until_lun_ready(const nand_t* const nand, const uint8_t this_lun_
     return false; /**< Not ready but timeout */
 }
 
+size_t nand_extract_id(uint16_t* const bytes_id, const size_t bytes_id_size) {
+    const bool   is_DDR      = nand_check_DDR(bytes_id, bytes_id_size);
+    const size_t folded_size = is_DDR ? nand_fold_DDR_repeat_bytes(bytes_id, bytes_id_size, 0x00) : bytes_id_size;
+    const size_t id_size     = nand_extract_id_size(bytes_id, folded_size, 4);
+
+    for(size_t pos = id_size; pos < bytes_id_size; ++pos) {
+        bytes_id[pos] = 0x00;
+    }
+
+    return id_size;
+}
+
 size_t nand_extract_id_size(const uint16_t * const bytes_id, const size_t bytes_id_size, const size_t min_pattern_size)
 {
     if (bytes_id_size < 1)

@@ -226,6 +226,7 @@ void nand_wait(const uint32_t delay_ns);
 bool nand_wait_until_ready(const nand_t* const nand, const uint8_t this_lun_no, const uint32_t ready_this_lun_timeout_ns, const uint32_t ready_other_luns_timeout_ns);
 bool nand_wait_until_lun_ready(const nand_t* const nand, const uint8_t this_lun_no, const uint32_t timeout_ns);
 
+size_t nand_extract_id(uint16_t* const bytes_id, const size_t bytes_id_size);
 size_t nand_extract_id_size(const uint16_t * const bytes_id, const size_t bytes_id_size, const size_t min_pattern_size);
 bool nand_check_DDR(const uint16_t * const bytes, const size_t bytes_size);
 size_t nand_fold_DDR_repeat_bytes(uint16_t * const bytes, const size_t bytes_size, const uint8_t filling_empty_byte);

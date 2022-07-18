@@ -291,6 +291,66 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
     if(err != NULL) {
         *err = NAND_RW_OK;
     }
+
     free(chains);
     return rw_size;
+}
+
+size_t nand_onfi_read_id(nand_onfi_t* const nand_onfi, const nand_cmd_t* const id_cmd, uint16_t* const bytes_id, const size_t bytes_id_max_size, const uint8_t lun_no) {
+    nand_raw_t* raw_store = (nand_raw_t*)malloc(sizeof(nand_raw_t));
+    {
+        nand_raw_t _raw_store = {
+            .raw_size = bytes_id_max_size,
+            .buffer = bytes_id,
+            .buffer_size = bytes_id_max_size,
+            .current_buffer_seq = 0,
+            .current_raw_offset = 0
+        };
+        memcpy(raw_store, &_raw_store, sizeof(_raw_store));
+    }
+
+    nand_cmd_t* cmd_override = (nand_cmd_t*)malloc(sizeof(nand_cmd_t));
+    {
+        nand_cmd_t _cmd_override = {
+            .pre_hook_cb = NULL,
+            .post_hook_cb = NULL,
+            .chains_length = 3,
+            .chains = {
+                { .cycles_defined = false },
+                { .cycles_defined = false },
+                {
+                    .cycles_defined = true,
+                    .timings = NAND_ONFI_CMD_TIMING_RAW_READ,
+                    .cycles_type = NAND_CMD_TYPE_RAW_READ,
+                    .cycles = { .raw = raw_store }
+                },
+            }
+        };
+        memcpy(cmd_override, &_cmd_override, sizeof(_cmd_override));
+    }
+
+    nand_cmd_params_t* cmd_params = (nand_cmd_params_t*)malloc(sizeof(nand_cmd_params_t));
+    {
+        nand_cmd_params_t _cmd_params = {
+            .lun_no = lun_no,
+            .cmd_override = cmd_override
+        };
+        memcpy(cmd_params, &_cmd_params, sizeof(_cmd_params));
+    }
+
+    nand_rw_response_t* err = (nand_rw_response_t *)malloc(sizeof(nand_rw_response_t));
+
+    nand_onfi_run_cmd(nand_onfi, id_cmd, cmd_params, err);
+
+    free(cmd_params);
+    free(cmd_override);
+    free(raw_store);
+
+    if(*err != NAND_RW_OK) {
+        free(err);
+        return 0;
+    }
+
+    free(err);
+    return nand_extract_id(bytes_id, bytes_id_max_size);
 }

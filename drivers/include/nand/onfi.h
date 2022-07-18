@@ -140,6 +140,8 @@ typedef struct {
 
 int nand_onfi_init(nand_onfi_t* const nand, nand_params_t* const params);
 size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_cmd_t* const cmd, nand_cmd_params_t* const cmd_params, nand_rw_response_t* const err);
+size_t nand_onfi_read_id(nand_onfi_t* const nand_onfi, const nand_cmd_t* const id_cmd, uint16_t* const bytes_id, const size_t bytes_id_max_size, const uint8_t lun_no);
+size_t nand_onfi_read_parameter_page(nand_onfi_t* const nand_onfi, const nand_cmd_t* const id_cmd, uint16_t* const bytes_id, const size_t bytes_id_max_size, const uint8_t lun_no);
 
 #ifdef __cplusplus
 }
