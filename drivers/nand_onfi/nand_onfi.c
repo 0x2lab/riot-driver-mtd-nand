@@ -262,6 +262,19 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
                                 if(raw->buffer_size != buffer_size) {
                                     raw->buffer_size = buffer_size; /**< Touch the passed param */
                                 }
+
+                                print_u32_hex((uint32_t)(uintptr_t)raw);
+                                print_str("\r\n");
+                                fflush(stdout);
+                                print_u32_dec(buffer_size);
+                                print_str("\r\n");
+                                fflush(stdout);
+                                print_u32_dec(raw->buffer_size);
+                                print_str("\r\n");
+                                fflush(stdout);
+                                print_u32_dec(raw->raw_size);
+                                print_str("\r\n");
+                                fflush(stdout);
                             }
                             break;
 
