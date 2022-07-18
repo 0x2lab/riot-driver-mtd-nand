@@ -38,7 +38,6 @@ extern "C" {
 #include "nand/onfi/cmd.h"
 #include "nand/onfi/cmd_timing.h"
 #include "ztimer.h"
-#include "fmt.h"
 
 int nand_onfi_init(nand_onfi_t* const nand, nand_onfi_params_t* const params);
 size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const cmd, nand_onfi_cmd_params_t* const cmd_params, nand_onfi_rw_response_t* const err);
@@ -83,19 +82,11 @@ static inline size_t nand_onfi_write_addr_single(const nand_onfi_t* const nand, 
 }
 
 static inline size_t nand_onfi_read_cycle(const nand_onfi_t* const nand, uint16_t* const out_cycle_data, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
-    print_str("nand_onfi_read_cycle: ");
-    //print_u32_hex((uint32_t)(uintptr_t)nand);
-    print_str("\r\n");
-    return 0;
     return nand_onfi_read_io(nand, out_cycle_data, cycle_read_enable_post_delay_ns, cycle_read_disable_post_delay_ns);
 }
 
 static inline size_t nand_onfi_read_raw(const nand_onfi_t* const nand, uint16_t* const out_buffer, const size_t buffer_size, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
     size_t ret_size = 0;
-    print_str("nand_onfi_read_raw: ");
-    //print_u32_hex((uint32_t)(uintptr_t)nand);
-    print_str("\r\n");
-    return 0;
 
     for(size_t seq = 0; seq < buffer_size; ++seq) {
         ret_size += nand_onfi_read_cycle(nand, &(out_buffer[seq]), cycle_read_enable_post_delay_ns, cycle_read_disable_post_delay_ns);
@@ -185,22 +176,10 @@ static inline void nand_onfi_set_chip_disable(const nand_onfi_t* const nand, con
 }
 
 static inline void nand_onfi_wait(const uint32_t delay_ns) {
-    print_str("nand_onfi_wait: ");
-    fflush(stdout);
-    print_u32_dec(delay_ns);
-    fflush(stdout);
-    print_str("\r\n");
-
     if(delay_ns != 0) {
-        print_str("nand_onfi_wait: TEST1\r\n");
-        fflush(stdout);
-
+        /* TODO: ztimer_sleep not working */
         //ztimer_sleep(ZTIMER_USEC, delay_ns / NAND_ONFI_TIMING_MICROSEC(1));
-        print_str("nand_onfi_wait: TEST2\r\n");
-        fflush(stdout);
     }
-    print_str("nand_onfi_wait: TEST3\r\n");
-    fflush(stdout);
 }
 
 static inline size_t nand_onfi_all_pages_count(const nand_onfi_t* const nand) {
