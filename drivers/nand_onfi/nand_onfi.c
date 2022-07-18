@@ -270,8 +270,6 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
                         }
                     }
 
-                    return 0;
-
                     *current_raw_offset += buffer_size;
 
                     if(post_hook_cb != NULL) {
