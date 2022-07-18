@@ -53,6 +53,7 @@ union _nand_onfi_cmd_cycles_t {
     uint64_t                    addr[NAND_ONFI_ADDR_INDEX_ALL];
     uint64_t                    addr_column;
     uint64_t                    addr_row;
+    uint16_t                    addr_single;
     nand_onfi_raw_t*            raw;                                // Nullable
 };
 

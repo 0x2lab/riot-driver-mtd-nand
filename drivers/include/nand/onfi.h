@@ -78,15 +78,8 @@ static inline size_t nand_onfi_write_addr(const nand_onfi_t* const nand, const u
     return ret_size;
 }
 
-static inline size_t nand_onfi_write_addr_column_single(const nand_onfi_t* const nand, const uint16_t* const addr_column_single_cycle_data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
-    return nand_onfi_write_cycle(nand, addr_column_single_cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
-}
-
-static inline size_t nand_onfi_write_addr_row_single(const nand_onfi_t* const nand, const uint16_t* const addr_row_single_cycle_data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
-    print_str("nand_onfi_write_addr_row_single: ");
-    print_u32_hex((uint32_t)(uintptr_t)nand);
-    print_str("\r\n");
-    return nand_onfi_write_cycle(nand, addr_row_single_cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+static inline size_t nand_onfi_write_addr_single(const nand_onfi_t* const nand, const uint16_t* const addr_single_cycle_data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
+    return nand_onfi_write_cycle(nand, addr_single_cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
 }
 
 static inline size_t nand_onfi_read_cycle(const nand_onfi_t* const nand, uint16_t* const out_cycle_data, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
