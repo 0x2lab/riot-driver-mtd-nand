@@ -185,9 +185,22 @@ static inline void nand_onfi_set_chip_disable(const nand_onfi_t* const nand, con
 }
 
 static inline void nand_onfi_wait(const uint32_t delay_ns) {
+    print_str("nand_onfi_wait: ");
+    fflush(stdout);
+    print_u32_dec(delay_ns);
+    fflush(stdout);
+    print_str("\r\n");
+
     if(delay_ns != 0) {
+        print_str("nand_onfi_wait: TEST1\r\n");
+        fflush(stdout);
+
         ztimer_sleep(ZTIMER_USEC, delay_ns / NAND_ONFI_TIMING_MICROSEC(1));
+        print_str("nand_onfi_wait: TEST2\r\n");
+        fflush(stdout);
     }
+    print_str("nand_onfi_wait: TEST3\r\n");
+    fflush(stdout);
 }
 
 static inline size_t nand_onfi_all_pages_count(const nand_onfi_t* const nand) {
