@@ -234,7 +234,6 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
 
                         switch(cycles_type) {
                         case NAND_CMD_TYPE_RAW_WRITE:
-                            return 0;
                             nand_set_io_pin_write(nand);
                             rw_size += nand_write_raw(nand, buffer, buffer_size, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
                             break;
