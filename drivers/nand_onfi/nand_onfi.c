@@ -257,13 +257,12 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
 
                         case NAND_CMD_TYPE_RAW_READ:
                             {
-#if 0
                                 rw_size += nand_read_raw(nand, buffer, buffer_size, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                                return 0;
 
                                 if(raw->buffer_size != buffer_size) {
                                     raw->buffer_size = buffer_size; /**< Touch the passed param */
                                 }
-#endif
                             }
                             break;
 
