@@ -88,6 +88,8 @@ static inline size_t nand_onfi_write_addr_row_single(const nand_onfi_t* const na
 }
 
 static inline size_t nand_onfi_read_cycle(const nand_onfi_t* const nand, uint16_t* const out_cycle_data, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
+    print_u32_hex((uint32_t)(uintptr_t)nand);
+    print_str("\r\n");
     return nand_onfi_read_io(nand, out_cycle_data, cycle_read_enable_post_delay_ns, cycle_read_disable_post_delay_ns);
 }
 
