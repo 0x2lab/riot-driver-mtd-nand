@@ -235,7 +235,7 @@ void nand_set_io_pin_read(const nand_t* const nand) {
 }
 
 void nand_wait(const uint32_t delay_ns) {
-    return 0;
+    return;
     if(delay_ns != 0) {
         /* TODO: ztimer_sleep not working */
         //ztimer_sleep(ZTIMER_USEC, delay_ns / NAND_TIMING_MICROSEC(1));
