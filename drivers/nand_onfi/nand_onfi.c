@@ -283,6 +283,8 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
             break;
         }
 
+        return 0;
+
         nand_wait(timings->post_delay_ns);
     }
 
