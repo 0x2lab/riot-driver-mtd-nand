@@ -38,6 +38,7 @@ extern "C" {
 #include "nand/onfi/cmd.h"
 #include "nand/onfi/cmd_timing.h"
 #include "ztimer.h"
+#include "fmt.h"
 
 int nand_onfi_init(nand_onfi_t* const nand, nand_onfi_params_t* const params);
 size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const cmd, nand_onfi_cmd_params_t* const cmd_params, nand_onfi_rw_response_t* const err);
