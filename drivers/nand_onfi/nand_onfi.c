@@ -126,6 +126,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
                     nand_set_latch_address(nand);
                     break;
                 }
+                return 0;
 
                 nand_wait(timings->latch_enable_post_delay_ns);
 
@@ -195,6 +196,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
                 size_t            buffer_size           =   raw->buffer_size;
                 size_t*     const current_buffer_seq    = &(raw->current_buffer_seq);
                 size_t*     const current_raw_offset    = &(raw->current_raw_offset);
+                return 0;
 
                 if(*raw_size == 0) {
                     if(err != NULL) {
