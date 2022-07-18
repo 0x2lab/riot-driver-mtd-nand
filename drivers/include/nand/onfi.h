@@ -195,7 +195,7 @@ static inline void nand_onfi_wait(const uint32_t delay_ns) {
         print_str("nand_onfi_wait: TEST1\r\n");
         fflush(stdout);
 
-        ztimer_sleep(ZTIMER_USEC, delay_ns / NAND_ONFI_TIMING_MICROSEC(1));
+        //ztimer_sleep(ZTIMER_USEC, delay_ns / NAND_ONFI_TIMING_MICROSEC(1));
         print_str("nand_onfi_wait: TEST2\r\n");
         fflush(stdout);
     }
