@@ -229,9 +229,9 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
                     }
 
                     if(buffer != NULL) {
-                        return 0;
                         const size_t raw_remaining_size = *raw_size - *current_raw_offset;
                         buffer_size = (raw_remaining_size > buffer_size) ? buffer_size : raw_remaining_size; /**< Only touch locally, instead of touch the passed param */
+                        return 0;
 
                         switch(cycles_type) {
                         case NAND_CMD_TYPE_RAW_WRITE:
