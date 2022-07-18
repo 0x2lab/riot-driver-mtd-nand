@@ -10,6 +10,7 @@ config MODULE_NAND_ONFI
     depends on HAS_NAND
     depends on TEST_KCONFIG
     select MODULE_NAND
+    select MODULE_FMT 
 
 config HAS_NAND_ONFI
     bool

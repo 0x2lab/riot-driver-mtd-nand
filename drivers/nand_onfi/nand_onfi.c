@@ -20,6 +20,7 @@
 
 #define ENABLE_DEBUG 0
 #include "debug.h"
+#include "fmt.h"
 
 #include "nand/onfi.h"
 #include "nand.h"
