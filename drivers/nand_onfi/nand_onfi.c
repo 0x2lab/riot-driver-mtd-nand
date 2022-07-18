@@ -182,7 +182,6 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
                 nand_set_latch_raw(nand);
                 nand_wait(timings->latch_disable_post_delay_ns);
             }
-            return 0;
             break;
 
         case NAND_CMD_TYPE_RAW_WRITE:
