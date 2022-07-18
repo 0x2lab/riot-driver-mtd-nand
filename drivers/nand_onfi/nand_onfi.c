@@ -126,7 +126,6 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
                     nand_set_latch_address(nand);
                     break;
                 }
-                return 0;
 
                 nand_wait(timings->latch_enable_post_delay_ns);
 
@@ -168,7 +167,6 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
                     break;
 
                 case NAND_CMD_TYPE_ADDR_SINGLE_WRITE:
-                    return 0;
                     rw_size += nand_write_addr_single(nand, &(cycles->addr_single), timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
                     break;
 
