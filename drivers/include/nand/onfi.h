@@ -83,12 +83,14 @@ static inline size_t nand_onfi_write_addr_column_single(const nand_onfi_t* const
 }
 
 static inline size_t nand_onfi_write_addr_row_single(const nand_onfi_t* const nand, const uint16_t* const addr_row_single_cycle_data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
+    print_str("nand_onfi_write_addr_row_single: ");
     print_u32_hex((uint32_t)(uintptr_t)nand);
     print_str("\r\n");
     return nand_onfi_write_cycle(nand, addr_row_single_cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
 }
 
 static inline size_t nand_onfi_read_cycle(const nand_onfi_t* const nand, uint16_t* const out_cycle_data, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
+    print_str("nand_onfi_read_cycle: ");
     print_u32_hex((uint32_t)(uintptr_t)nand);
     print_str("\r\n");
     return nand_onfi_read_io(nand, out_cycle_data, cycle_read_enable_post_delay_ns, cycle_read_disable_post_delay_ns);
@@ -96,6 +98,9 @@ static inline size_t nand_onfi_read_cycle(const nand_onfi_t* const nand, uint16_
 
 static inline size_t nand_onfi_read_raw(const nand_onfi_t* const nand, uint16_t* const out_buffer, const size_t buffer_size, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
     size_t ret_size = 0;
+    print_str("nand_onfi_read_raw: ");
+    print_u32_hex((uint32_t)(uintptr_t)nand);
+    print_str("\r\n");
 
     for(size_t seq = 0; seq < buffer_size; ++seq) {
         ret_size += nand_onfi_read_cycle(nand, &(out_buffer[seq]), cycle_read_enable_post_delay_ns, cycle_read_disable_post_delay_ns);

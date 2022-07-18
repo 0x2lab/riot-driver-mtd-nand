@@ -446,6 +446,7 @@ size_t nand_onfi_write_addr_row(const nand_onfi_t* const nand, const uint64_t* c
 }
 
 size_t nand_onfi_write_io(const nand_onfi_t* const nand, const uint16_t* const data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
+    print_str("nand_onfi_write_io: ");
     print_u32_hex((uint32_t)(uintptr_t)nand);
     print_str("\r\n");
     nand_onfi_set_write_enable(nand);
