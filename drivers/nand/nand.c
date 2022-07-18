@@ -235,6 +235,8 @@ void nand_set_io_pin_read(const nand_t* const nand) {
 }
 
 void nand_wait(const uint32_t delay_ns) {
+    return;
+
     if(delay_ns != 0) {
         /* TODO: ztimer_sleep not working */
         //ztimer_sleep(ZTIMER_USEC, delay_ns / NAND_TIMING_MICROSEC(1));
@@ -249,6 +251,8 @@ void nand_wait(const uint32_t delay_ns) {
 }
 
 bool nand_wait_until_ready(const nand_t* const nand, const uint8_t this_lun_no, const uint32_t ready_this_lun_timeout_ns, const uint32_t ready_other_luns_timeout_ns) {
+    return true;
+
     const uint8_t lun_count = nand->lun_count;
 
     if(ready_other_luns_timeout_ns > 0) {
@@ -273,6 +277,8 @@ bool nand_wait_until_ready(const nand_t* const nand, const uint8_t this_lun_no, 
 }
 
 bool nand_wait_until_lun_ready(const nand_t* const nand, const uint8_t this_lun_no, const uint32_t timeout_ns) {
+    return true;
+
     const uint32_t timeout_deadline = nand_deadline_from_interval(timeout_ns);
     uint32_t timeout_left = timeout_deadline;
 
