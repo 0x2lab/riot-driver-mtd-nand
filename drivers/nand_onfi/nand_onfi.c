@@ -296,7 +296,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
     return rw_size;
 }
 
-size_t nand_onfi_read_id(nand_onfi_t* const nand_onfi, const nand_cmd_t* const id_cmd, uint16_t* const bytes_id, const size_t bytes_id_max_size, const uint8_t lun_no) {
+size_t nand_onfi_read_id(nand_onfi_t* const nand_onfi, const uint8_t this_lun_no, const nand_cmd_t* const id_cmd, uint16_t* const bytes_id, const size_t bytes_id_max_size) {
     nand_raw_t* raw_store = (nand_raw_t*)malloc(sizeof(nand_raw_t));
     {
         nand_raw_t _raw_store = {
@@ -332,7 +332,7 @@ size_t nand_onfi_read_id(nand_onfi_t* const nand_onfi, const nand_cmd_t* const i
     nand_cmd_params_t* cmd_params = (nand_cmd_params_t*)malloc(sizeof(nand_cmd_params_t));
     {
         nand_cmd_params_t _cmd_params = {
-            .lun_no = lun_no,
+            .lun_no = this_lun_no,
             .cmd_override = cmd_override
         };
         memcpy(cmd_params, &_cmd_params, sizeof(_cmd_params));
