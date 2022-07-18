@@ -285,27 +285,35 @@ bool nand_wait_until_lun_ready(const nand_t* const nand, const uint8_t this_lun_
     do {
         switch(this_lun_no) {
         case 0:
-            if(gpio_read(nand->params.rb0))
             {
-                return true;
+                if(gpio_read(nand->params.rb0))
+                {
+                    return true;
+                }
             }
             break;
         case 1:
-            if(gpio_read(nand->params.rb1))
             {
-                return true;
+                if(gpio_read(nand->params.rb1))
+                {
+                    return true;
+                }
             }
             break;
         case 2:
-            if(gpio_read(nand->params.rb2))
             {
-                return true;
+                if(gpio_read(nand->params.rb2))
+                {
+                    return true;
+                }
             }
             break;
         case 3:
-            if(gpio_read(nand->params.rb3))
             {
-                return true;
+                if(gpio_read(nand->params.rb3))
+                {
+                    return true;
+                }
             }
             break;
         }

@@ -321,16 +321,24 @@ static inline void nand_set_write_protect_disable(const nand_t* const nand) {
 static inline void nand_set_chip_enable(const nand_t* const nand, const uint8_t lun_no) {
     switch(lun_no) {
     case 0:
-        gpio_write(nand->params.ce0, 0);
+        {
+            gpio_write(nand->params.ce0, 0);
+        }
         break;
     case 1:
-        gpio_write(nand->params.ce1, 0);
+        {
+            gpio_write(nand->params.ce1, 0);
+        }
         break;
     case 2:
-        gpio_write(nand->params.ce2, 0);
+        {
+            gpio_write(nand->params.ce2, 0);
+        }
         break;
     case 3:
-        gpio_write(nand->params.ce3, 0);
+        {
+            gpio_write(nand->params.ce3, 0);
+        }
         break;
     }
 }
@@ -338,16 +346,24 @@ static inline void nand_set_chip_enable(const nand_t* const nand, const uint8_t 
 static inline void nand_set_chip_disable(const nand_t* const nand, const uint8_t lun_no) {
     switch(lun_no) {
     case 0:
-        gpio_write(nand->params.ce0, 1);
+        {
+            gpio_write(nand->params.ce0, 1);
+        }
         break;
     case 1:
-        gpio_write(nand->params.ce1, 1);
+        {
+            gpio_write(nand->params.ce1, 1);
+        }
         break;
     case 2:
-        gpio_write(nand->params.ce2, 1);
+        {
+            gpio_write(nand->params.ce2, 1);
+        }
         break;
     case 3:
-        gpio_write(nand->params.ce3, 1);
+        {
+            gpio_write(nand->params.ce3, 1);
+        }
         break;
     }
 }

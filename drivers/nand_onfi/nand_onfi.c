@@ -121,10 +121,14 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
 
                 switch(cycles_type) {
                 case NAND_CMD_TYPE_CMD_WRITE:
-                    nand_set_latch_command(nand);
+                    {
+                        nand_set_latch_command(nand);
+                    }
                     break;
                 default:
-                    nand_set_latch_address(nand);
+                    {
+                        nand_set_latch_address(nand);
+                    }
                     break;
                 }
 
@@ -152,23 +156,33 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
 
                 switch(cycles_type) {
                 case NAND_CMD_TYPE_CMD_WRITE:
-                    rw_size += nand_write_cmd(nand, &(cycles->cmd), timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                    {
+                        rw_size += nand_write_cmd(nand, &(cycles->cmd), timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                    }
                     break;
 
                 case NAND_CMD_TYPE_ADDR_WRITE:
-                    rw_size += nand_write_addr(nand, cycles->addr, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                    {
+                        rw_size += nand_write_addr(nand, cycles->addr, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                    }
                     break;
 
                 case NAND_CMD_TYPE_ADDR_COLUMN_WRITE:
-                    rw_size += nand_write_addr_column(nand, &(cycles->addr_column), timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                    {
+                        rw_size += nand_write_addr_column(nand, &(cycles->addr_column), timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                    }
                     break;
 
                 case NAND_CMD_TYPE_ADDR_ROW_WRITE:
-                    rw_size += nand_write_addr_row(nand, &(cycles->addr_row), timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                    {
+                        rw_size += nand_write_addr_row(nand, &(cycles->addr_row), timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                    }
                     break;
 
                 case NAND_CMD_TYPE_ADDR_SINGLE_WRITE:
-                    rw_size += nand_write_addr_single(nand, &(cycles->addr_single), timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                    {
+                        rw_size += nand_write_addr_single(nand, &(cycles->addr_single), timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                    }
                     break;
 
                 default:
@@ -235,15 +249,19 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
 
                         switch(cycles_type) {
                         case NAND_CMD_TYPE_RAW_WRITE:
-                            nand_set_io_pin_write(nand);
-                            rw_size += nand_write_raw(nand, buffer, buffer_size, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                            {
+                                nand_set_io_pin_write(nand);
+                                rw_size += nand_write_raw(nand, buffer, buffer_size, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                            }
                             break;
 
                         case NAND_CMD_TYPE_RAW_READ:
-                            rw_size += nand_read_raw(nand, buffer, buffer_size, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+                            {
+                                rw_size += nand_read_raw(nand, buffer, buffer_size, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
 
-                            if(raw->buffer_size != buffer_size) {
-                                raw->buffer_size = buffer_size; /**< Touch the passed param */
+                                if(raw->buffer_size != buffer_size) {
+                                    raw->buffer_size = buffer_size; /**< Touch the passed param */
+                                }
                             }
                             break;
 
