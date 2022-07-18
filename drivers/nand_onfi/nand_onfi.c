@@ -262,7 +262,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
                                 if(raw->buffer_size != buffer_size) {
                                     raw->buffer_size = buffer_size; /**< Touch the passed param */
                                 }
-                                return 0;
+                                return 1;
                             }
                             break;
 
