@@ -123,7 +123,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
         nand_onfi_wait(timings->pre_delay_ns);
         
         switch(cycles_type) {
-        case NAND_ONFI_CMD_TYPE_CMD_WRITE:;
+        case NAND_ONFI_CMD_TYPE_CMD_WRITE:
             {
                 const uint8_t command = cycles->cmd;
 
@@ -160,7 +160,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
             }
             break;
 
-        case NAND_ONFI_CMD_TYPE_ADDR_WRITE:;
+        case NAND_ONFI_CMD_TYPE_ADDR_WRITE:
             {
                 const uint64_t* const addr = cycles->addr;
                 while(1) {}
@@ -198,8 +198,8 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
             }
             break;
 
-        case NAND_ONFI_CMD_TYPE_ADDR_COLUMN_WRITE:;
-        case NAND_ONFI_CMD_TYPE_ADDR_COLUMN_SINGLE_WRITE:;
+        case NAND_ONFI_CMD_TYPE_ADDR_COLUMN_WRITE:
+        case NAND_ONFI_CMD_TYPE_ADDR_COLUMN_SINGLE_WRITE:
             {
                 const uint64_t* const addr_column = &(cycles->addr_column);
 
@@ -224,7 +224,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 }
 
                 nand_onfi_set_io_pin_write(nand);
-                if(NAND_ONFI_CMD_TYPE_ADDR_COLUMN_SINGLE_WRITE) {
+                if(cycles_type == NAND_ONFI_CMD_TYPE_ADDR_COLUMN_SINGLE_WRITE) {
                     uint16_t addr_column_u16 = (uint16_t)*addr_column;
                     ret_size += nand_onfi_write_addr_column_single(nand, &addr_column_u16, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
                 } else {
@@ -241,8 +241,8 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
             }
             break;
 
-        case NAND_ONFI_CMD_TYPE_ADDR_ROW_WRITE:;
-        case NAND_ONFI_CMD_TYPE_ADDR_ROW_SINGLE_WRITE:;
+        case NAND_ONFI_CMD_TYPE_ADDR_ROW_WRITE:
+        case NAND_ONFI_CMD_TYPE_ADDR_ROW_SINGLE_WRITE:
             {
                 const uint64_t* const addr_row = &(cycles->addr_row);
 
@@ -267,7 +267,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
                 }
 
                 nand_onfi_set_io_pin_write(nand);
-                if(NAND_ONFI_CMD_TYPE_ADDR_COLUMN_SINGLE_WRITE) {
+                if(cycles_type == NAND_ONFI_CMD_TYPE_ADDR_COLUMN_SINGLE_WRITE) {
                     uint16_t addr_row_u16 = (uint16_t)*addr_row;
                     ret_size += nand_onfi_write_addr_row_single(nand, &addr_row_u16, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
                 } else {
@@ -285,7 +285,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
             }
             break;
 
-        case NAND_ONFI_CMD_TYPE_RAW_WRITE:;
+        case NAND_ONFI_CMD_TYPE_RAW_WRITE:
             {
                 nand_onfi_raw_t* const raw                =   cycles->raw;
                 size_t*          const raw_size           = &(raw->raw_size);
@@ -345,7 +345,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
             }
             break;
 
-        case NAND_ONFI_CMD_TYPE_RAW_READ:;
+        case NAND_ONFI_CMD_TYPE_RAW_READ:
             {
                 nand_onfi_raw_t* const raw                =   cycles->raw;
                 size_t*          const raw_size           = &(raw->raw_size);
