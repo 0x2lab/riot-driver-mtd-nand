@@ -28,6 +28,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 int nand_onfi_init(nand_onfi_t* const nand_onfi, nand_params_t* const params) {
     if(nand_onfi == NULL) {
