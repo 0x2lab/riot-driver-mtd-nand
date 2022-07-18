@@ -54,7 +54,6 @@ extern "C" {
 
 #define NAND_MAX_COMMAND_SIZE               (2)
 #define NAND_MAX_COMMAND_CYCLE_SIZE         (10)
-
 #define NAND_MAX_ID_SIZE                    (20)
 
 #define NAND_MAX_IO_BITS                    (16)

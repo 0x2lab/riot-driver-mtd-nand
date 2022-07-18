@@ -317,7 +317,7 @@ size_t nand_extract_id_size(const uint16_t * const bytes_id, const size_t bytes_
         return bytes_id_size;
     }
 
-    uint16_t pattern[20] = { bytes_id[0] };
+    uint16_t pattern[NAND_MAX_ID_SIZE] = { bytes_id[0] };
     size_t pattern_size = 1;
 
     for (size_t pos = 1; pos < min_pattern_size && pos < bytes_id_size; ++pos)
