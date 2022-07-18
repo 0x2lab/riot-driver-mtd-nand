@@ -68,6 +68,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
     const nand_hook_cb_t         post_hook_cb   = (cmd_override != NULL && cmd_override->post_hook_cb  != NULL)               ? cmd_override->post_hook_cb  : cmd->post_hook_cb;
     const size_t                 chains_length  = (cmd_override != NULL && cmd_override->chains_length >  cmd->chains_length) ? cmd_override->chains_length : cmd->chains_length;
           nand_cmd_chain_t*      chains         = (nand_cmd_chain_t*)malloc(sizeof(nand_cmd_chain_t) * chains_length);
+    return 0;
 
     if(chains_length > NAND_MAX_COMMAND_CYCLE_SIZE) {
         if(err != NULL) {
