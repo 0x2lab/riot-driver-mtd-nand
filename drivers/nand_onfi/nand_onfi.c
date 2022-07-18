@@ -516,6 +516,13 @@ size_t nand_onfi_write_io(const nand_onfi_t* const nand, const uint16_t* const d
     print_str("nand_onfi_write_io: TEST5\r\n");
     fflush(stdout);
 
+    print_str("nand_onfi_write_io: ");
+    fflush(stdout);
+    print_u32_dec(cycle_write_disable_post_delay_ns);
+    fflush(stdout);
+    print_str("\r\n");
+    fflush(stdout);
+
     if(cycle_write_disable_post_delay_ns > 0) {
         nand_onfi_wait(cycle_write_disable_post_delay_ns);
         print_str("nand_onfi_write_io: TEST6\r\n");
