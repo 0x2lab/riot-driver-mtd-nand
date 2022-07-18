@@ -234,6 +234,44 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
             }
             break;
 
+        case NAND_ONFI_CMD_TYPE_ADDR_ROW_WRITE:
+            {
+                const uint64_t* const addr_row = &(cycles->addr_row);
+
+                nand_onfi_wait(timings->latch_enable_pre_delay_ns);
+                nand_onfi_set_latch_address(nand);
+                nand_onfi_wait(timings->latch_enable_post_delay_ns);
+
+                if(! nand_onfi_wait_until_ready(nand, lun_no, timings->ready_this_lun_timeout_ns, timings->ready_other_luns_timeout_ns)) {
+                    nand_onfi_wait(timings->latch_disable_pre_delay_ns);
+                    nand_onfi_set_latch_raw(nand);
+                    nand_onfi_wait(timings->latch_disable_post_delay_ns);
+
+                    *err = NAND_ONFI_RW_TIMEOUT;
+                    free(chains);
+                    return ret_size;
+                } else {
+                    nand_onfi_wait(timings->ready_post_delay_ns);
+                }
+
+                if(pre_hook_cb != NULL) {
+                    pre_hook_cb(nand, cmd, cmd_params, seq, current_chain);
+                }
+
+                nand_onfi_set_io_pin_write(nand);
+                ret_size += nand_onfi_write_addr_row(nand, addr_row, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
+
+                if(post_hook_cb != NULL) {
+                    post_hook_cb(nand, cmd, cmd_params, seq, current_chain);
+                }
+
+                nand_onfi_wait(timings->latch_disable_pre_delay_ns);
+                nand_onfi_set_latch_raw(nand);
+                nand_onfi_wait(timings->latch_disable_post_delay_ns);
+
+            }
+            break;
+
         case NAND_ONFI_CMD_TYPE_ADDR_SINGLE_WRITE:
             {
                 const uint16_t* const addr_single = &(cycles->addr_single);
@@ -260,49 +298,6 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand, const nand_onfi_cmd_t* const c
 
                 nand_onfi_set_io_pin_write(nand);
                 ret_size += nand_onfi_write_addr_single(nand, addr_single, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
-
-                if(post_hook_cb != NULL) {
-                    post_hook_cb(nand, cmd, cmd_params, seq, current_chain);
-                }
-
-                nand_onfi_wait(timings->latch_disable_pre_delay_ns);
-                nand_onfi_set_latch_raw(nand);
-                nand_onfi_wait(timings->latch_disable_post_delay_ns);
-
-            }
-            break;
-
-        case NAND_ONFI_CMD_TYPE_ADDR_ROW_WRITE:
-            {
-                const uint64_t* const addr_row = &(cycles->addr_row);
-
-                nand_onfi_wait(timings->latch_enable_pre_delay_ns);
-                nand_onfi_set_latch_address(nand);
-                nand_onfi_wait(timings->latch_enable_post_delay_ns);
-
-                if(! nand_onfi_wait_until_ready(nand, lun_no, timings->ready_this_lun_timeout_ns, timings->ready_other_luns_timeout_ns)) {
-                    nand_onfi_wait(timings->latch_disable_pre_delay_ns);
-                    nand_onfi_set_latch_raw(nand);
-                    nand_onfi_wait(timings->latch_disable_post_delay_ns);
-
-                    *err = NAND_ONFI_RW_TIMEOUT;
-                    free(chains);
-                    return ret_size;
-                } else {
-                    nand_onfi_wait(timings->ready_post_delay_ns);
-                }
-
-                if(pre_hook_cb != NULL) {
-                    pre_hook_cb(nand, cmd, cmd_params, seq, current_chain);
-                }
-
-                nand_onfi_set_io_pin_write(nand);
-                if(cycles_type == NAND_ONFI_CMD_TYPE_ADDR_COLUMN_SINGLE_WRITE) {
-                    uint16_t addr_row_u16 = (uint16_t)*addr_row;
-                    ret_size += nand_onfi_write_addr_row_single(nand, &addr_row_u16, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
-                } else {
-                    ret_size += nand_onfi_write_addr_row(nand, addr_row, timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
-                }
 
                 if(post_hook_cb != NULL) {
                     post_hook_cb(nand, cmd, cmd_params, seq, current_chain);
