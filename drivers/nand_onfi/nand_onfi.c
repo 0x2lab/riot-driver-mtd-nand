@@ -108,7 +108,6 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
         }
 
         nand_wait(timings->pre_delay_ns);
-        return;
         
         switch(cycles_type) {
         case NAND_CMD_TYPE_CMD_WRITE:
@@ -152,7 +151,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
 
                 switch(cycles_type) {
                 case NAND_CMD_TYPE_CMD_WRITE:
-                    return;
+                    return 0;
                     rw_size += nand_write_cmd(nand, &(cycles->cmd), timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
                     break;
 
@@ -169,7 +168,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
                     break;
 
                 case NAND_CMD_TYPE_ADDR_SINGLE_WRITE:
-                    return;
+                    return 0;
                     rw_size += nand_write_addr_single(nand, &(cycles->addr_single), timings->cycle_rw_enable_post_delay_ns, timings->cycle_rw_disable_post_delay_ns);
                     break;
 
