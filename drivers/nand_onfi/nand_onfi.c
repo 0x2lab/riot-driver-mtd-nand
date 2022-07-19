@@ -296,54 +296,29 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
     return rw_size;
 }
 
-size_t nand_onfi_read_id(nand_onfi_t* const nand_onfi, const uint8_t this_lun_no, const nand_cmd_t* const id_cmd, uint16_t* const bytes_id, const size_t bytes_id_max_size) {
-    nand_raw_t* raw_store = (nand_raw_t*)malloc(sizeof(nand_raw_t));
-    {
-        nand_raw_t _raw_store = {
-            .raw_size = bytes_id_max_size,
-            .buffer = bytes_id,
-            .buffer_size = bytes_id_max_size,
-            .current_buffer_seq = 0,
-            .current_raw_offset = 0
-        };
-        memcpy(raw_store, &_raw_store, sizeof(_raw_store));
-    }
-
-    nand_cmd_t* cmd_override = (nand_cmd_t*)malloc(sizeof(nand_cmd_t));
-    {
-        nand_cmd_t _cmd_override = {
-            .pre_hook_cb = NULL,
-            .post_hook_cb = NULL,
-            .chains_length = 3,
-            .chains = {
-                { .cycles_defined = false },
-                { .cycles_defined = false },
-                {
-                    .cycles_defined = true,
-                    .timings = NAND_ONFI_CMD_TIMING_RAW_READ,
-                    .cycles_type = NAND_CMD_TYPE_RAW_READ,
-                    .cycles = { .raw = raw_store }
-                },
-            }
-        };
-        memcpy(cmd_override, &_cmd_override, sizeof(_cmd_override));
-    }
-
-    nand_cmd_params_t* cmd_params = (nand_cmd_params_t*)malloc(sizeof(nand_cmd_params_t));
-    {
-        nand_cmd_params_t _cmd_params = {
-            .lun_no = this_lun_no,
-            .cmd_override = cmd_override
-        };
-        memcpy(cmd_params, &_cmd_params, sizeof(_cmd_params));
-    }
-
+size_t nand_onfi_template_cmdw_addrsgw_rawsgr(nand_onfi_t* const nand_onfi, const uint8_t this_lun_no, const nand_cmd_t* const cmd, uint16_t* const buffer, const size_t buffer_size) {
     nand_rw_response_t* err = (nand_rw_response_t *)malloc(sizeof(nand_rw_response_t));
 
-    nand_onfi_run_cmd(nand_onfi, id_cmd, cmd_params, err);
+    nand_raw_t* raw_store = (nand_raw_t*)malloc(sizeof(nand_raw_t));
+    raw_store->raw_size = buffer_size;
+    raw_store->buffer = buffer;
+    raw_store->buffer_size = buffer_size;
+    raw_store->current_buffer_seq = 0;
+    raw_store->current_raw_offset = 0;
+
+    nand_cmd_t* cmd_mutable = (nand_cmd_t*)malloc(sizeof(nand_cmd_t));
+    memcpy(cmd_mutable, &cmd, sizeof(cmd));
+    cmd_mutable->chains[2].cycles_defined = true;
+    cmd_mutable->chains[2].cycles.raw = raw_store;
+
+    nand_cmd_params_t* cmd_params = (nand_cmd_params_t*)malloc(sizeof(nand_cmd_params_t));
+    cmd_params->lun_no = this_lun_no;
+    cmd_params->cmd_override = cmd_mutable;
+
+    const size_t raw_read_size = nand_onfi_run_cmd(nand_onfi, cmd, cmd_params, err) - 2;
 
     free(cmd_params);
-    free(cmd_override);
+    free(cmd_mutable);
     free(raw_store);
 
     if(*err != NAND_RW_OK) {
@@ -352,10 +327,27 @@ size_t nand_onfi_read_id(nand_onfi_t* const nand_onfi, const uint8_t this_lun_no
     }
 
     free(err);
-    return nand_extract_id(bytes_id, bytes_id_max_size);
+    return raw_read_size;
+}
+
+size_t nand_onfi_read_id(nand_onfi_t* const nand_onfi, const uint8_t this_lun_no, const nand_cmd_t* const id_cmd, uint16_t* const bytes_id, const size_t bytes_id_max_size) {
+    const size_t raw_read_size  = nand_onfi_template_cmdw_addrsgw_rawsgr(nand_onfi, this_lun_no, id_cmd, bytes_id, bytes_id_max_size);
+
+    for(size_t pos = raw_read_size; pos < bytes_id_max_size; ++pos) {
+        bytes_id[pos] = 0x00;
+    }
+
+    return nand_extract_id(bytes_id, raw_read_size);
 }
 
 size_t nand_onfi_read_parameter_page(nand_onfi_t* const nand_onfi, const uint8_t this_lun_no, const nand_cmd_t* const pp_cmd, uint16_t* const bytes_pp, const size_t bytes_pp_max_size) {
-    const size_t bytes_pp_size = (bytes_pp_max_size < NAND_ONFI_MAX_PARAMETER_PAGE_SIZE) ? bytes_pp_max_size : NAND_ONFI_MAX_PARAMETER_PAGE_SIZE;
-    return nand_onfi_read_id(nand_onfi, this_lun_no, pp_cmd, bytes_pp, bytes_pp_size);
+    const size_t raw_read_size  = nand_onfi_template_cmdw_addrsgw_rawsgr(nand_onfi, this_lun_no, pp_cmd, bytes_pp, bytes_pp_max_size);
+    const bool   is_DDR         = nand_check_DDR(bytes_pp, raw_read_size);
+    const size_t folded_size    = is_DDR ? nand_fold_DDR_repeat_bytes(bytes_pp, raw_read_size, 0x00) : raw_read_size;
+
+    for(size_t pos = folded_size; pos < bytes_pp_max_size; ++pos) {
+        bytes_pp[pos] = 0x00;
+    }
+
+    return folded_size;
 }
