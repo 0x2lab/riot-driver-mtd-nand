@@ -37,21 +37,50 @@ int nand_onfi_init(nand_onfi_t* const nand_onfi, nand_params_t* const params) {
     }
 
     nand_t* nand = (nand_t*)nand_onfi;
+    nand->init_done = false;
 
     if(params == NULL) {
-        nand->init_done = false;
         return NAND_INIT_ERROR;
     }
 
     int nand_init_status = nand_init(nand, params);
-    if(nand_init_status != NAND_OK) {
+    if(nand_init_status != NAND_INIT_PARTIAL) {
         return nand_init_status;
     }
 
-    //TODO: nand_onfi->onfi_chip init
+    nand->nand_id_size          = nand_onfi_read_id(nand_onfi, 0, &NAND_ONFI_CMD_READ_ID, nand->nand_id, NAND_MAX_ID_SIZE);
+    if(nand->nand_id_size < NAND_MIN_ID_SIZE) {
+        return NAND_INIT_ERROR;
+    }
+
+    nand->sig_size              = nand_onfi_read_id(nand_onfi, 0, &NAND_ONFI_CMD_READ_ID_ONFI_SIG, nand->sig, NAND_MAX_SIG_SIZE);
+
+    const size_t pp_size = nand_onfi_read_chip(nand_onfi, 0, nand_onfi->onfi_chip);
+    if(pp_size < NAND_ONFI_PARAMETER_PAGE_SIZE) {
+        return NAND_INIT_ERROR;
+    }
+
+    nand->data_bus_width        = (nand_onfi->onfi_chip.features & 0x1);
+    nand->addr_bus_width        = 8;
+
+    nand->data_bytes_per_page   = nand_onfi->onfi_chip.byte_per_page;
+    nand->spare_bytes_per_page  = nand_onfi->onfi_chip.spare_bytes_per_page;
+    nand->pages_per_block       = nand_onfi->onfi_chip.pages_per_block;
+    nand->blocks_per_lun        = nand_onfi->onfi_chip.blocks_per_lun;
+    nand->lun_count             = nand_onfi->onfi_chip.lun_count;
+    nand->bb_per_lun            = nand_onfi->onfi_chip.bb_per_lun;
+
+    nand->column_addr_cycles    = (nand_onfi->onfi_chip.addr_cycles & 0xF0) >> 4;
+    nand->row_addr_cycles       = (nand_onfi->onfi_chip.addr_cycles & 0x0F);
+
+    nand->bits_per_cell         = nand_onfi->onfi_chip.bits_per_cell;
+    nand->programs_per_page     = nand_onfi->onfi_chip.programs_per_page;
+
     //TODO: nand_onfi->onfi_prop init
 
-    return NAND_OK;
+    nand->init_done             = true;
+
+    return NAND_INIT_OK;
 }
 
 size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const cmd, nand_cmd_params_t* const cmd_params, nand_rw_response_t* const err) {

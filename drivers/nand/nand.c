@@ -33,32 +33,16 @@ int nand_init(nand_t* const nand, nand_params_t* const params) {
         return NAND_INIT_ERROR;
     }
 
+    nand->init_done = false;
+
     if(params == NULL) {
-        nand->init_done = false;
         return NAND_INIT_ERROR;
     }
 
     nand->params = *params;
-
     nand_set_pin_default(nand);
 
-    nand->data_bus_width = 8;
-    nand->addr_bus_width = 8;
-
-    nand->data_bytes_per_page = 2048;
-    nand->spare_bytes_per_page = 64;
-    nand->pages_per_block = 64;
-    nand->blocks_per_lun = 8192;
-    nand->lun_count = 1;
-    nand->bb_per_lun = 0;
-    nand->column_addr_cycles = 2;
-    nand->row_addr_cycles = 3;
-    nand->bits_per_cell = 2;
-    nand->programs_per_page = 3;
-
-    nand->init_done = true;
-
-    return NAND_OK;
+    return NAND_INIT_PARTIAL;
 }
 
 size_t nand_write_addr_column(const nand_t* const nand, const uint64_t* const addr_column, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {

@@ -57,6 +57,7 @@ extern "C" {
 #define NAND_MAX_COMMAND_CYCLE_SIZE         (10)
 #define NAND_MIN_ID_SIZE                    (4)
 #define NAND_MAX_ID_SIZE                    (20)
+#define NAND_MAX_SIG_SIZE                   (20)
 
 #define NAND_MAX_IO_BITS                    (16)
 
@@ -69,7 +70,8 @@ extern "C" {
 #define NAND_MAX_ADDR_ROW_CYCLES            (10)
 
 #define NAND_INIT_ERROR                     (-1)   /**< returned on failed init */
-#define NAND_OK                             (0)    /**< returned on successful init */
+#define NAND_INIT_PARTIAL                   (-2)   /**< returned on partial init */
+#define NAND_INIT_OK                        (0)    /**< returned on successful init */
 
 typedef enum {
     NAND_RW_OK = 0,             /**< no error */
@@ -192,6 +194,12 @@ struct _nand_params_t {
 };
 
 struct _nand_t {
+    uint8_t             nand_id[NAND_MAX_ID_SIZE];
+    uint8_t             nand_id_size;
+
+    uint8_t             sig[NAND_MAX_SIG_SIZE];
+    uint8_t             sig_size;
+
     uint8_t             data_bus_width;
     uint8_t             addr_bus_width;
 
