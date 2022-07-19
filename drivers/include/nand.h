@@ -258,14 +258,6 @@ static inline size_t nand_read_cycle(const nand_t* const nand, uint8_t out_cycle
 static inline size_t nand_read_raw(const nand_t* const nand, uint8_t* const out_buffer, const size_t buffer_size, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
     size_t ret_size = 0;
 
-    for(size_t seq = 0; seq < buffer_size; ++seq) {
-        ret_size += nand_read_cycle(nand, &(out_buffer[seq]), cycle_read_enable_post_delay_ns, cycle_read_disable_post_delay_ns);
-    }
-
-    return ret_size;
-
-    size_t ret_size = 0;
-
     size_t seq = 0;
     while(seq + 1 < buffer_size) {
         ret_size += nand_read_cycle(nand, &(out_buffer[seq]), cycle_read_enable_post_delay_ns, cycle_read_disable_post_delay_ns);
