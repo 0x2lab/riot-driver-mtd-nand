@@ -119,8 +119,8 @@ typedef struct __attribute__ ((packed)) {
     uint16_t reserved5;
     uint8_t  nvddr2_nvddr3_features;        /**< since ONFI (TODO) */
     uint8_t  nvddr2_nvddr3_warmup_cycles;   /**< since ONFI (TODO) */
-    uint16_t nvddr3_timing_modes;           /**< since ONFI (TODO) */
-    uint8_t  nvddr2_timing_modes;           /**< since ONFI (TODO) */
+    uint16_t nvddr3_timing_modes2;          /**< since ONFI (TODO) */
+    uint8_t  nvddr2_timing_modes2;          /**< since ONFI (TODO) */
     uint8_t  reserved6;
 
     /* vendor */
