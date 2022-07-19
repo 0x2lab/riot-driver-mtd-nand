@@ -139,7 +139,7 @@ size_t nand_write_addr_single(const nand_t* const nand, const uint16_t* const ad
     case 16:
         {
             uint8_t* const cycle_data = (uint8_t *)malloc(sizeof(uint8_t) * 2);
-            cycle_data[1] = *addr_single_cycle_data & 0xFF00;
+            cycle_data[1] = (*addr_single_cycle_data & 0xFF00) >> 8;
             cycle_data[0] = *addr_single_cycle_data & 0xFF;
             ret_size = nand_write_cycle(nand, cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
             free(cycle_data);
