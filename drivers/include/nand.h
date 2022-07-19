@@ -252,7 +252,7 @@ static inline size_t nand_write_cycle(const nand_t* const nand, const uint8_t cy
 }
 
 static inline size_t nand_write_cmd(const nand_t* const nand, const uint8_t* const cmd, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
-    return nand_write_cycle(nand, cmd, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns); 
+    return nand_write_cycle(nand, cmd, 8, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns); 
 }
 
 static inline size_t nand_write_addr(const nand_t* const nand, const uint64_t addr[], const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
