@@ -221,6 +221,7 @@ size_t nand_write_addr_single(const nand_t* const nand, const uint16_t* const ad
 size_t nand_write_raw(const nand_t* const nand, const uint8_t* const data, const size_t data_size, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns);
 size_t nand_write_io(const nand_t* const nand, const uint8_t data[2], const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns);
 
+size_t nand_read_raw(const nand_t* const nand, uint8_t* const out_buffer, const size_t buffer_size, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns);
 size_t nand_read_io(const nand_t* const nand, uint8_t out_data[2], const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns);
 
 void nand_set_ctrl_pin(const nand_t* const nand);
@@ -251,32 +252,8 @@ static inline size_t nand_write_addr(const nand_t* const nand, const uint64_t ad
     return ret_size;
 }
 
-
 static inline size_t nand_read_cycle(const nand_t* const nand, uint8_t out_cycle_data[2], const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
     return nand_read_io(nand, out_cycle_data, cycle_read_enable_post_delay_ns, cycle_read_disable_post_delay_ns);
-}
-
-static inline size_t nand_read_raw(const nand_t* const nand, uint8_t* const out_buffer, const size_t buffer_size, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
-    size_t ret_size = 0;
-
-    size_t seq = 0;
-    while(seq + 1 < buffer_size) {
-        ret_size += nand_read_cycle(nand, &(out_buffer[seq]), cycle_read_enable_post_delay_ns, cycle_read_disable_post_delay_ns);
-
-        ++seq;
-        if(nand->data_bus_width == 16) {
-            ++seq;
-        }
-    }
-    if(seq + 1 == buffer_size) {
-        uint8_t* const cycle_data = (uint8_t*)malloc(sizeof(uint8_t) * 2);
-        cycle_data[1] = 0x00;
-        cycle_data[0] = out_buffer[seq];
-        ret_size += nand_read_cycle(nand, cycle_data, cycle_read_enable_post_delay_ns, cycle_read_disable_post_delay_ns);
-        free(cycle_data);
-    }
-
-    return ret_size;
 }
 
 static inline void nand_set_pin_default(const nand_t* const nand) {

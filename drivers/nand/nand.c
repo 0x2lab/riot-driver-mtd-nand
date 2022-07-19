@@ -213,6 +213,28 @@ size_t nand_write_io(const nand_t* const nand, const uint8_t data[2], const uint
     return ret_len;
 }
 
+size_t nand_read_raw(const nand_t* const nand, uint8_t* const out_buffer, const size_t buffer_size, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
+    size_t ret_size = 0;
+
+    size_t seq = 0;
+    while(seq + 1 < buffer_size) {
+        ret_size += nand_read_cycle(nand, &(out_buffer[seq]), cycle_read_enable_post_delay_ns, cycle_read_disable_post_delay_ns);
+
+        ++seq;
+        if(nand->data_bus_width == 16) {
+            ++seq;
+        }
+    }
+    if(seq + 1 == buffer_size) {
+        uint8_t* const cycle_data = (uint8_t*)malloc(sizeof(uint8_t) * 2);
+        ret_size += nand_read_cycle(nand, cycle_data, cycle_read_enable_post_delay_ns, cycle_read_disable_post_delay_ns);
+        out_buffer[seq] = cycle_data[0];
+        free(cycle_data);
+    }
+
+    return ret_size;
+}
+
 size_t nand_read_io(const nand_t* const nand, uint8_t out_data[2], const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
     size_t ret_len = 0;
 
