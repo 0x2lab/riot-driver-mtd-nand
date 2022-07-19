@@ -27,7 +27,6 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <inttypes.h>
 
 int nand_init(nand_t* const nand, nand_params_t* const params) {
     if(nand == NULL) {
