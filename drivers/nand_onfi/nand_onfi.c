@@ -351,3 +351,18 @@ size_t nand_onfi_read_parameter_page(nand_onfi_t* const nand_onfi, const uint8_t
 
     return folded_size;
 }
+
+size_t nand_onfi_read_chip(nand_onfi_t* const nand_onfi, const uint8_t this_lun_no, nand_onfi_chip_t* const chip) {
+    const size_t          buffer_size   = sizeof(nand_onfi_chip_t);
+          uint16_t* const buffer_u16    = (uint16_t*)malloc(sizeof(uint16_t) * buffer_size);
+          uint8_t*  const buffer_u8     = (uint8_t*)malloc(sizeof(uint8_t) * buffer_size);
+    const size_t          pp_size       = nand_onfi_read_parameter_page(nand_onfi, this_lun_no, &NAND_ONFI_CMD_READ_PARAMETER_PAGE, buffer, buffer_size);
+
+    for(size_t pos = 0; pos < pp_size; pos++) {
+        buffer_u8[pos] = (uint8_t)buffer_u16[pos];
+    }
+
+
+
+    return folded_size;
+}

@@ -54,16 +54,17 @@ typedef enum {
     NAND_ONFI_V50 = 50          /**< ONFI version 5.0 */
 } nand_onfi_version_t;
 
-typedef struct {
+typedef struct __attribute__ ((packed)) {
     /* revision information and features block */
     /* 'O' 'N' 'F' 'I'  */
     uint8_t  sig[4];
     uint16_t revision;
     uint16_t features;
     uint16_t opt_cmd;
-    uint8_t  reserved0[2];
-    uint16_t ext_param_page_length; /**< since ONFI 2.1 */
-    uint8_t  num_of_param_pages;    /**< since ONFI 2.1 */
+    uint8_t  jtg_cmd;                       /**< since ONFI (TODO) */
+    uint8_t  training_cmd;                  /**< since ONFI (TODO) */
+    uint16_t ext_param_page_length;         /**< since ONFI 2.1 */
+    uint8_t  num_of_param_pages;            /**< since ONFI 2.1 */
     uint8_t  reserved1[17];
 
     /* manufacturer information block */
@@ -76,8 +77,8 @@ typedef struct {
     /* memory organization block */
     uint32_t byte_per_page;
     uint16_t spare_bytes_per_page;
-    uint32_t data_bytes_per_ppage;
-    uint16_t spare_bytes_per_ppage;
+    uint32_t data_bytes_per_ppage;          /**< reserved in ONFI 5.0 (TODO) */
+    uint16_t spare_bytes_per_ppage;         /**< reserved in ONFI 5.0 (TODO) */
     uint32_t pages_per_block;
     uint32_t blocks_per_lun;
     uint8_t  lun_count;
@@ -88,37 +89,49 @@ typedef struct {
     uint8_t  guaranteed_good_blocks;
     uint16_t guaranteed_block_endurance;
     uint8_t  programs_per_page;
-    uint8_t  ppage_attr;
+    uint8_t  ppage_attr;                    /**< reserved in ONFI 5.0 (TODO) */
     uint8_t  ecc_bits;
     uint8_t  interleaved_bits;
     uint8_t  interleaved_ops;
-    uint8_t  reserved3[13];
+    uint8_t  reserved3;
+    uint16_t nvddr3_timing_modes;           /**< since ONFI (TODO) */
+    uint32_t nvlpddr4_timing_modes;         /**< since ONFI (TODO) */
+    uint8_t  reserved4[6];
 
     /* electrical parameter block */
-    uint8_t  io_pin_capacitance_max;
+    uint8_t  io_pin_capacitance_max;        /**< reserved in ONFI 5.0 (TODO) */
     uint16_t sdr_timing_modes;
-    uint16_t program_cache_timing_mode;
-    uint16_t t_prog;
-    uint16_t t_bers;
-    uint16_t t_r;
-    uint16_t t_ccs;
+    uint16_t program_cache_timing_mode;     /**< reserved in ONFI 5.0 (TODO) */
+    uint16_t t_prog;                        /**< reserved in ONFI 5.0 (TODO) */
+    uint16_t t_bers;                        /**< reserved in ONFI 5.0 (TODO) */
+    uint16_t t_r;                           /**< reserved in ONFI 5.0 (TODO) */
+    uint16_t t_ccs;                         /**< reserved in ONFI 5.0 (TODO) */
     uint8_t  nvddr_timing_modes;
     uint8_t  nvddr2_timing_modes;
     uint8_t  nvddr_nvddr2_features;
-    uint16_t clk_pin_capacitance_typ;
-    uint16_t io_pin_capacitance_typ;
-    uint16_t input_pin_capacitance_typ;
-    uint8_t  input_pin_capacitance_max;
+    uint16_t clk_pin_capacitance_typ;       /**< reserved in ONFI 5.0 (TODO) */
+    uint16_t io_pin_capacitance_typ;        /**< reserved in ONFI 5.0 (TODO) */
+    uint16_t input_pin_capacitance_typ;     /**< reserved in ONFI 5.0 (TODO) */
+    uint8_t  input_pin_capacitance_max;     /**< reserved in ONFI 5.0 (TODO) */
     uint8_t  driver_strength_support;
-    uint16_t t_int_r;
-    uint16_t t_adl;
-    uint8_t  reserved4[8];
+    uint16_t t_int_r;                       /**< reserved in ONFI 5.0 (TODO) */
+    uint16_t t_adl;                         /**< reserved in ONFI 5.0 (TODO) */
+    uint16_t reserved5;
+    uint8_t  nvddr2_nvddr3_features;        /**< since ONFI (TODO) */
+    uint8_t  nvddr2_nvddr3_warmup_cycles;   /**< since ONFI (TODO) */
+    uint16_t nvddr3_timing_modes;           /**< since ONFI (TODO) */
+    uint8_t  nvddr2_timing_modes;           /**< since ONFI (TODO) */
+    uint8_t  reserved6;
 
     /* vendor */
     uint16_t vendor_revision;
     uint8_t  vendor[88];
 
     uint16_t crc;
+
+    /* redundant */
+    uint8_t  redundant1[256];
+    uint8_t  redundant2[256];
 } nand_onfi_chip_t;
 
 typedef struct {
