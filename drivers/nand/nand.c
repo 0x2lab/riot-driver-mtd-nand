@@ -44,6 +44,8 @@ int nand_init(nand_t* const nand, nand_params_t* const params) {
     nand_set_pin_default(nand);
 
     nand->data_bus_width = 8;
+    nand->addr_bus_width = 8;
+
     nand->data_bytes_per_page = 2048;
     nand->spare_bytes_per_page = 64;
     nand->pages_per_block = 64;
@@ -64,10 +66,30 @@ size_t nand_write_addr_column(const nand_t* const nand, const uint64_t* const ad
     size_t ret_size = 0;
     const uint8_t column_addr_cycles = nand->column_addr_cycles;
 
-    for(size_t seq = 0; seq < column_addr_cycles; ++seq) {
-        const uint64_t mask = ((1 << NAND_ADDR_IO_BITS) - 1) << (NAND_ADDR_IO_BITS * seq);
-        const uint16_t cycle_data = *addr_column & mask;
-        ret_size += nand_write_cycle(nand, &cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+    switch(nand->addr_bus_width) {
+    case 8:
+        {
+            uint64_t mask = 0xFF;
+            for(size_t seq = 0; seq < column_addr_cycles; ++seq) {
+                const uint8_t cycle_data = *addr_column & mask;
+                ret_size += nand_write_cycle(nand, &cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+                mask <<= 8;
+            }
+        }
+        break;
+    case 16:
+        {
+            uint64_t mask = 0xFF;
+            for(size_t seq = 0; seq < column_addr_cycles; ++seq) {
+                uint8_t* const cycle_data = (uint8_t *)malloc(sizeof(uint8_t) * 2);
+                cycle_data[0] = *addr_column & mask;
+                cycle_data[1] = *addr_column & (mask << 8);
+                ret_size += nand_write_cycle(nand, cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+                free(cycle_data);
+                mask <<= 16;
+            }
+        }
+        break;
     }
 
     return ret_size;
@@ -77,16 +99,61 @@ size_t nand_write_addr_row(const nand_t* const nand, const uint64_t* const addr_
     size_t ret_size = 0;
     const uint8_t row_addr_cycles = nand->row_addr_cycles;
 
-    for(size_t seq = 0; seq < row_addr_cycles; ++seq) {
-        const uint64_t mask = ((1 << NAND_ADDR_IO_BITS) - 1) << (NAND_ADDR_IO_BITS * seq);
-        const uint16_t cycle_data = *addr_row & mask;
-        ret_size += nand_write_cycle(nand, &cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+    switch(nand->addr_bus_width) {
+    case 8:
+        {
+            uint64_t mask = 0xFF;
+            for(size_t seq = 0; seq < row_addr_cycles; ++seq) {
+                const uint8_t cycle_data = *addr_row & mask;
+                ret_size += nand_write_cycle(nand, &cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+                mask <<= 8;
+            }
+        }
+        break;
+    case 16:
+        {
+            uint64_t mask = 0xFF;
+            for(size_t seq = 0; seq < row_addr_cycles; ++seq) {
+                uint8_t* const cycle_data = (uint8_t *)malloc(sizeof(uint8_t) * 2);
+                cycle_data[0] = *addr_row & mask;
+                cycle_data[1] = *addr_row & (mask << 8);
+                ret_size += nand_write_cycle(nand, cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+                free(cycle_data);
+                mask <<= 16;
+            }
+        }
+        break;
     }
 
     return ret_size;
 }
 
-size_t nand_write_io(const nand_t* const nand, const uint16_t* const data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
+size_t nand_write_addr_single(const nand_t* const nand, const uint16_t* const addr_single_cycle_data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
+    size_t ret_size = 0;
+
+    switch(nand->addr_bus_width) {
+    case 8:
+        {
+            ret_size = nand_write_cycle(nand, (uint8_t*)&addr_single_cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+        }
+        break;
+    case 16:
+        {
+            uint8_t* const cycle_data = (uint8_t *)malloc(sizeof(uint8_t) * 2);
+            cycle_data[0] = *addr_single_cycle_data & 0xFF;
+            cycle_data[1] = *addr_single_cycle_data & 0xFF00;
+            ret_size = nand_write_cycle(nand, cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+            free(cycle_data);
+        }
+        break;
+    }
+
+    return ret_size;
+}
+
+size_t nand_write_io(const nand_t* const nand, const uint8_t* const data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
+    size_t ret_len = 0;
+
     nand_set_write_enable(nand);
 
     if(cycle_write_enable_post_delay_ns > 0) {
@@ -94,24 +161,26 @@ size_t nand_write_io(const nand_t* const nand, const uint16_t* const data, const
     }
 
     if(nand->data_bus_width == 16) {
-        gpio_write(nand->params.io15, (*data & NAND_MSB15) ? 1 : 0);
-        gpio_write(nand->params.io14, (*data & NAND_MSB14) ? 1 : 0);
-        gpio_write(nand->params.io13, (*data & NAND_MSB13) ? 1 : 0);
-        gpio_write(nand->params.io12, (*data & NAND_MSB12) ? 1 : 0);
-        gpio_write(nand->params.io11, (*data & NAND_MSB11) ? 1 : 0);
-        gpio_write(nand->params.io10, (*data & NAND_MSB10) ? 1 : 0);
-        gpio_write(nand->params.io9, (*data & NAND_MSB9) ? 1 : 0);
-        gpio_write(nand->params.io8, (*data & NAND_MSB8) ? 1 : 0);
+        gpio_write(nand->params.io15, (data[1] & NAND_MSB7) ? 1 : 0);
+        gpio_write(nand->params.io14, (data[1] & NAND_MSB6) ? 1 : 0);
+        gpio_write(nand->params.io13, (data[1] & NAND_MSB5) ? 1 : 0);
+        gpio_write(nand->params.io12, (data[1] & NAND_MSB4) ? 1 : 0);
+        gpio_write(nand->params.io11, (data[1] & NAND_MSB3) ? 1 : 0);
+        gpio_write(nand->params.io10, (data[1] & NAND_MSB2) ? 1 : 0);
+        gpio_write(nand->params.io9, (data[1] & NAND_MSB1) ? 1 : 0);
+        gpio_write(nand->params.io8, (data[1] & NAND_MSB0) ? 1 : 0);
+        ++ret_len;
     }
 
-    gpio_write(nand->params.io7, (*data & NAND_MSB7) ? 1 : 0);
-    gpio_write(nand->params.io6, (*data & NAND_MSB6) ? 1 : 0);
-    gpio_write(nand->params.io5, (*data & NAND_MSB5) ? 1 : 0);
-    gpio_write(nand->params.io4, (*data & NAND_MSB4) ? 1 : 0);
-    gpio_write(nand->params.io3, (*data & NAND_MSB3) ? 1 : 0);
-    gpio_write(nand->params.io2, (*data & NAND_MSB2) ? 1 : 0);
-    gpio_write(nand->params.io1, (*data & NAND_MSB1) ? 1 : 0);
-    gpio_write(nand->params.io0, (*data & NAND_MSB0) ? 1 : 0);
+    gpio_write(nand->params.io7, (data[0] & NAND_MSB7) ? 1 : 0);
+    gpio_write(nand->params.io6, (data[0] & NAND_MSB6) ? 1 : 0);
+    gpio_write(nand->params.io5, (data[0] & NAND_MSB5) ? 1 : 0);
+    gpio_write(nand->params.io4, (data[0] & NAND_MSB4) ? 1 : 0);
+    gpio_write(nand->params.io3, (data[0] & NAND_MSB3) ? 1 : 0);
+    gpio_write(nand->params.io2, (data[0] & NAND_MSB2) ? 1 : 0);
+    gpio_write(nand->params.io1, (data[0] & NAND_MSB1) ? 1 : 0);
+    gpio_write(nand->params.io0, (data[0] & NAND_MSB0) ? 1 : 0);
+    ++ret_len;
 
     nand_set_write_disable(nand);
 
@@ -119,11 +188,12 @@ size_t nand_write_io(const nand_t* const nand, const uint16_t* const data, const
         nand_wait(cycle_write_disable_post_delay_ns);
     }
 
-    return 1;
+    return ret_len;
 }
 
-size_t nand_read_io(const nand_t* const nand, uint16_t* const out_data, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
-    *out_data = 0;
+size_t nand_read_io(const nand_t* const nand, uint8_t* const out_data, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
+    size_t ret_len = 0;
+
     nand_set_read_enable(nand);
 
     if(cycle_read_enable_post_delay_ns > 0) {
@@ -131,6 +201,7 @@ size_t nand_read_io(const nand_t* const nand, uint16_t* const out_data, const ui
     }
 
     if(nand->data_bus_width == 16) {
+        out_data[1] = 0;
         const bool io15 = gpio_read(nand->params.io15) != 0;
         const bool io14 = gpio_read(nand->params.io14) != 0;
         const bool io13 = gpio_read(nand->params.io13) != 0;
@@ -139,10 +210,11 @@ size_t nand_read_io(const nand_t* const nand, uint16_t* const out_data, const ui
         const bool io10 = gpio_read(nand->params.io10) != 0;
         const bool io9 = gpio_read(nand->params.io9) != 0;
         const bool io8 = gpio_read(nand->params.io8) != 0;
-
-        *out_data = (io15 << 15) | (io14 << 14) | (io13 << 13) | (io12 << 12) | (io11 << 11) | (io10 << 10) | (io9 << 9) | (io8 << 8);
+        out_data[1] = (io15 << 7) | (io14 << 6) | (io13 << 5) | (io12 << 4) | (io11 << 3) | (io10 << 2) | (io9 << 1) | io8;
+        ++ret_len;
     }
 
+    out_data[0] = 0;
     const bool io7 = gpio_read(nand->params.io7) != 0;
     const bool io6 = gpio_read(nand->params.io6) != 0;
     const bool io5 = gpio_read(nand->params.io5) != 0;
@@ -151,8 +223,8 @@ size_t nand_read_io(const nand_t* const nand, uint16_t* const out_data, const ui
     const bool io2 = gpio_read(nand->params.io2) != 0;
     const bool io1 = gpio_read(nand->params.io1) != 0;
     const bool io0 = gpio_read(nand->params.io0) != 0;
-
-    *out_data = *out_data | (io7 << 7) | (io6 << 6) | (io5 << 5) | (io4 << 4) | (io3 << 3) | (io2 << 2) | (io1 << 1) | io0;
+    out_data[0] = (io7 << 7) | (io6 << 6) | (io5 << 5) | (io4 << 4) | (io3 << 3) | (io2 << 2) | (io1 << 1) | io0;
+    ++ret_len;
 
     nand_set_read_disable(nand);
 
@@ -160,7 +232,7 @@ size_t nand_read_io(const nand_t* const nand, uint16_t* const out_data, const ui
         nand_wait(cycle_read_disable_post_delay_ns);
     }
 
-    return 1;
+    return ret_len;
 }
 
 void nand_set_ctrl_pin(const nand_t* const nand) {
@@ -317,10 +389,10 @@ bool nand_wait_until_lun_ready(const nand_t* const nand, const uint8_t this_lun_
     return false; /**< Not ready but timeout */
 }
 
-size_t nand_extract_id(uint16_t* const bytes_id, const size_t bytes_id_size) {
+size_t nand_extract_id(uint8_t* const bytes_id, const size_t bytes_id_size) {
     const bool   is_DDR      = nand_check_DDR(bytes_id, bytes_id_size);
     const size_t folded_size = is_DDR ? nand_fold_DDR_repeat_bytes(bytes_id, bytes_id_size, 0x00) : bytes_id_size;
-    const size_t id_size     = nand_extract_id_size(bytes_id, folded_size, 4);
+    const size_t id_size     = nand_extract_id_size(bytes_id, folded_size, NAND_MIN_ID_SIZE);
 
     for(size_t pos = id_size; pos < bytes_id_size; ++pos) {
         bytes_id[pos] = 0x00;
@@ -329,14 +401,14 @@ size_t nand_extract_id(uint16_t* const bytes_id, const size_t bytes_id_size) {
     return id_size;
 }
 
-size_t nand_extract_id_size(const uint16_t * const bytes_id, const size_t bytes_id_size, const size_t min_pattern_size)
+size_t nand_extract_id_size(const uint8_t * const bytes_id, const size_t bytes_id_size, const size_t min_pattern_size)
 {
     if (bytes_id_size < 1)
     {
         return bytes_id_size;
     }
 
-    uint16_t pattern[NAND_MAX_ID_SIZE] = { bytes_id[0] };
+    uint8_t pattern[NAND_MAX_ID_SIZE] = { bytes_id[0] };
     size_t pattern_size = 1;
 
     for (size_t pos = 1; pos < min_pattern_size && pos < bytes_id_size; ++pos)
@@ -387,7 +459,7 @@ size_t nand_extract_id_size(const uint16_t * const bytes_id, const size_t bytes_
     return pattern_size;
 }
 
-bool nand_check_DDR(const uint16_t * const bytes, const size_t bytes_size)
+bool nand_check_DDR(const uint8_t * const bytes, const size_t bytes_size)
 {
     if(bytes_size < 1)
     {
@@ -409,7 +481,7 @@ bool nand_check_DDR(const uint16_t * const bytes, const size_t bytes_size)
 }
 
 /** Fold the DDR repeat bytes to SDR bytes */
-size_t nand_fold_DDR_repeat_bytes(uint16_t * const bytes, const size_t bytes_size, const uint8_t filling_empty_byte)
+size_t nand_fold_DDR_repeat_bytes(uint8_t * const bytes, const size_t bytes_size, const uint8_t filling_empty_byte)
 {
     /**
        ONFI 5.0
@@ -439,7 +511,7 @@ size_t nand_fold_DDR_repeat_bytes(uint16_t * const bytes, const size_t bytes_siz
     while(pos < bytes_size)
     {
         // Fill the rest bytes with `empty_byte`
-        bytes[pos] = (uint16_t)filling_empty_byte;
+        bytes[pos] = filling_empty_byte;
         ++pos;
     }
 

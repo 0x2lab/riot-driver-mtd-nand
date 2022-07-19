@@ -54,6 +54,7 @@ extern "C" {
 
 #define NAND_MAX_COMMAND_SIZE               (2)
 #define NAND_MAX_COMMAND_CYCLE_SIZE         (10)
+#define NAND_MIN_ID_SIZE                    (4)
 #define NAND_MAX_ID_SIZE                    (20)
 
 #define NAND_MAX_IO_BITS                    (16)
@@ -120,7 +121,7 @@ struct _nand_cmd_timings_t {
 
 struct _nand_raw_t {
     size_t                      raw_size;                           // Zero-able
-    uint16_t*                   buffer;                             // Nullable
+    uint8_t*                    buffer;                             // Nullable
     size_t                      buffer_size;                        // Zero-able
     size_t                      current_buffer_seq;
     size_t                      current_raw_offset;
@@ -191,6 +192,7 @@ struct _nand_params_t {
 
 struct _nand_t {
     uint8_t             data_bus_width;
+    uint8_t             addr_bus_width;
 
     uint32_t            data_bytes_per_page;
     uint16_t            spare_bytes_per_page;
@@ -214,9 +216,9 @@ int nand_init(nand_t* const nand, nand_params_t* const params);
 
 size_t nand_write_addr_column(const nand_t* const nand, const uint64_t* const addr_column, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns);
 size_t nand_write_addr_row(const nand_t* const nand, const uint64_t* const addr_row, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns);
-size_t nand_write_io(const nand_t* const nand, const uint16_t* const data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns);
+size_t nand_write_io(const nand_t* const nand, const uint8_t* const data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns);
 
-size_t nand_read_io(const nand_t* const nand, uint16_t* const out_data, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns);
+size_t nand_read_io(const nand_t* const nand, uint8_t* const out_data, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns);
 
 void nand_set_ctrl_pin(const nand_t* const nand);
 void nand_set_io_pin_write(const nand_t* const nand);
@@ -226,28 +228,17 @@ void nand_wait(const uint32_t delay_ns);
 bool nand_wait_until_ready(const nand_t* const nand, const uint8_t this_lun_no, const uint32_t ready_this_lun_timeout_ns, const uint32_t ready_other_luns_timeout_ns);
 bool nand_wait_until_lun_ready(const nand_t* const nand, const uint8_t this_lun_no, const uint32_t timeout_ns);
 
-size_t nand_extract_id(uint16_t* const bytes_id, const size_t bytes_id_size);
-size_t nand_extract_id_size(const uint16_t * const bytes_id, const size_t bytes_id_size, const size_t min_pattern_size);
-bool nand_check_DDR(const uint16_t * const bytes, const size_t bytes_size);
-size_t nand_fold_DDR_repeat_bytes(uint16_t * const bytes, const size_t bytes_size, const uint8_t filling_empty_byte);
+size_t nand_extract_id(uint8_t* const bytes_id, const size_t bytes_id_size);
+size_t nand_extract_id_size(const uint8_t * const bytes_id, const size_t bytes_id_size, const size_t min_pattern_size);
+bool nand_check_DDR(const uint8_t * const bytes, const size_t bytes_size);
+size_t nand_fold_DDR_repeat_bytes(uint8_t * const bytes, const size_t bytes_size, const uint8_t filling_empty_byte);
 
-static inline size_t nand_write_cycle(const nand_t* const nand, const uint16_t* const cycle_data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
+static inline size_t nand_write_cycle(const nand_t* const nand, const uint8_t* const cycle_data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
     return nand_write_io(nand, cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
 }
 
-static inline size_t nand_write_raw(const nand_t* const nand, const uint16_t* const data, const size_t data_size, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
-    size_t ret_size = 0;
-
-    for(size_t seq = 0; seq < data_size; ++seq) {
-        ret_size += nand_write_cycle(nand, &(data[seq]), cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
-    }
-
-    return ret_size;
-}
-
 static inline size_t nand_write_cmd(const nand_t* const nand, const uint8_t* const cmd, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
-    uint16_t cmd_aligned = (uint16_t)(*cmd);
-    return nand_write_cycle(nand, &cmd_aligned, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns); 
+    return nand_write_cycle(nand, cmd, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns); 
 }
 
 static inline size_t nand_write_addr(const nand_t* const nand, const uint64_t addr[], const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
@@ -257,15 +248,21 @@ static inline size_t nand_write_addr(const nand_t* const nand, const uint64_t ad
     return ret_size;
 }
 
-static inline size_t nand_write_addr_single(const nand_t* const nand, const uint16_t* const addr_single_cycle_data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
-    return nand_write_cycle(nand, addr_single_cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+static inline size_t nand_write_raw(const nand_t* const nand, const uint8_t* const data, const size_t data_size, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
+    size_t ret_size = 0;
+
+    for(size_t seq = 0; seq < data_size; ++seq) {
+        ret_size += nand_write_cycle(nand, &(data[seq]), cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+    }
+
+    return ret_size;
 }
 
-static inline size_t nand_read_cycle(const nand_t* const nand, uint16_t* const out_cycle_data, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
+static inline size_t nand_read_cycle(const nand_t* const nand, uint8_t* const out_cycle_data, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
     return nand_read_io(nand, out_cycle_data, cycle_read_enable_post_delay_ns, cycle_read_disable_post_delay_ns);
 }
 
-static inline size_t nand_read_raw(const nand_t* const nand, uint16_t* const out_buffer, const size_t buffer_size, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
+static inline size_t nand_read_raw(const nand_t* const nand, uint8_t* const out_buffer, const size_t buffer_size, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
     size_t ret_size = 0;
 
     for(size_t seq = 0; seq < buffer_size; ++seq) {
