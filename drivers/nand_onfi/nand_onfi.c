@@ -60,7 +60,7 @@ int nand_onfi_init(nand_onfi_t* const nand_onfi, nand_params_t* const params) {
         return NAND_INIT_ERROR;
     }
 
-    nand->data_bus_width        = (nand_onfi->onfi_chip.features & 0x1);
+    nand->data_bus_width        = (nand_onfi->onfi_chip.features & 0x1) ? 16 : 8;
     nand->addr_bus_width        = 8;
 
     nand->data_bytes_per_page   = nand_onfi->onfi_chip.byte_per_page;
