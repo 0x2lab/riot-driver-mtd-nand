@@ -391,7 +391,7 @@ size_t nand_onfi_read_chip(nand_onfi_t* const nand_onfi, const uint8_t this_lun_
         return 0;
     }
 
-    memcpy(chip, buffer, pp_size);
+    memcpy(chip, buffer, sizeof(uint8_t) * pp_size);
 
     free(buffer);
     return pp_size;
