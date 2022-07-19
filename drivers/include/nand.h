@@ -72,6 +72,8 @@ extern "C" {
 #define NAND_INIT_ERROR                     (-1)   /**< returned on failed init */
 #define NAND_INIT_PARTIAL                   (-2)   /**< returned on partial init */
 #define NAND_INIT_OK                        (0)    /**< returned on successful init */
+#define NAND_INIT_ID_TOO_SHORT              (1)    /**< returned on failed init */
+#define NAND_INIT_PARAMETER_PAGE_TOO_SHORT  (2)    /**< returned on failed init */
 
 typedef enum {
     NAND_RW_OK = 0,             /**< no error */
