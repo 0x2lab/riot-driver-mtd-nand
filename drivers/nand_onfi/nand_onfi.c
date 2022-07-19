@@ -56,8 +56,9 @@ int nand_onfi_init(nand_onfi_t* const nand_onfi, nand_params_t* const params) {
     nand->sig_size              = nand_onfi_read_id(nand_onfi, 0, &NAND_ONFI_CMD_READ_ID_ONFI_SIG, nand->sig, NAND_MAX_SIG_SIZE);
 
     const size_t pp_size = nand_onfi_read_chip(nand_onfi, 0, &(nand_onfi->onfi_chip));
-    if(pp_size < NAND_ONFI_PARAMETER_PAGE_SIZE) {
-        return pp_size;
+    if(pp_size < (NAND_ONFI_PARAMETER_PAGE_SIZE / 8)) {
+        /** TODO: Parameter page too short */
+        return NAND_INIT_PARAMETER_PAGE_TOO_SHORT;
     }
 
     nand->data_bus_width        = (nand_onfi->onfi_chip.features & 0x1) ? 16 : 8;
