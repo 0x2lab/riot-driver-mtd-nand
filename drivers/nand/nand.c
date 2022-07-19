@@ -70,8 +70,10 @@ size_t nand_write_addr_column(const nand_t* const nand, const uint64_t* const ad
         {
             uint64_t mask = 0xFF;
             for(size_t seq = 0; seq < column_addr_cycles; ++seq) {
-                const uint8_t cycle_data = *addr_column & mask;
-                ret_size += nand_write_cycle(nand, &cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+                uint8_t* const cycle_data = (uint8_t *)malloc(sizeof(uint8_t));
+                *cycle_data = *addr_column & mask;
+                ret_size += nand_write_cycle(nand, cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+                free(cycle_data);
                 mask <<= 8;
             }
         }
@@ -103,8 +105,10 @@ size_t nand_write_addr_row(const nand_t* const nand, const uint64_t* const addr_
         {
             uint64_t mask = 0xFF;
             for(size_t seq = 0; seq < row_addr_cycles; ++seq) {
-                const uint8_t cycle_data = *addr_row & mask;
-                ret_size += nand_write_cycle(nand, &cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+                uint8_t* const cycle_data = (uint8_t *)malloc(sizeof(uint8_t));
+                *cycle_data = *addr_row & mask;
+                ret_size += nand_write_cycle(nand, cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+                free(cycle_data);
                 mask <<= 8;
             }
         }
@@ -133,7 +137,7 @@ size_t nand_write_addr_single(const nand_t* const nand, const uint16_t* const ad
     switch(nand->addr_bus_width) {
     case 8:
         {
-            ret_size = nand_write_cycle(nand, (uint8_t*)&addr_single_cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+            ret_size = nand_write_cycle(nand, (uint8_t*)addr_single_cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
         }
         break;
     case 16:
