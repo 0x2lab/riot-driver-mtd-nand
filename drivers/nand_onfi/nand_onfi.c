@@ -48,6 +48,9 @@ int nand_onfi_init(nand_onfi_t* const nand_onfi, nand_params_t* const params) {
         return nand_init_status;
     }
 
+    nand->data_bus_width        = 8;
+    nand->addr_bus_width        = 8;
+
     nand->nand_id_size          = nand_onfi_read_id(nand_onfi, 0, &NAND_ONFI_CMD_READ_ID, nand->nand_id, NAND_MAX_ID_SIZE);
     if(nand->nand_id_size < NAND_MIN_ID_SIZE) {
         return NAND_INIT_ID_TOO_SHORT;
