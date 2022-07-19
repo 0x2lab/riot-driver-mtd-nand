@@ -307,7 +307,7 @@ size_t nand_onfi_template_cmdw_addrsgw_rawsgr(nand_onfi_t* const nand_onfi, cons
     raw_store->current_raw_offset = 0;
 
     nand_cmd_t* cmd_mutable = (nand_cmd_t*)malloc(sizeof(nand_cmd_t));
-    memcpy(cmd_mutable, &cmd, sizeof(cmd));
+    memcpy(cmd_mutable, cmd, sizeof(nand_cmd_t));
     cmd_mutable->chains[2].cycles_defined = true;
     cmd_mutable->chains[2].cycles.raw = raw_store;
 
