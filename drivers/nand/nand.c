@@ -115,8 +115,8 @@ size_t nand_write_addr_row(const nand_t* const nand, const uint64_t* const addr_
             uint64_t mask = 0xFF;
             for(size_t seq = 0; seq < row_addr_cycles; ++seq) {
                 uint8_t* const cycle_data = (uint8_t *)malloc(sizeof(uint8_t) * 2);
-                cycle_data[0] = *addr_row & mask;
                 cycle_data[1] = *addr_row & (mask << 8);
+                cycle_data[0] = *addr_row & mask;
                 ret_size += nand_write_cycle(nand, cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
                 free(cycle_data);
                 mask <<= 16;
@@ -140,8 +140,8 @@ size_t nand_write_addr_single(const nand_t* const nand, const uint16_t* const ad
     case 16:
         {
             uint8_t* const cycle_data = (uint8_t *)malloc(sizeof(uint8_t) * 2);
-            cycle_data[0] = *addr_single_cycle_data & 0xFF;
             cycle_data[1] = *addr_single_cycle_data & 0xFF00;
+            cycle_data[0] = *addr_single_cycle_data & 0xFF;
             ret_size = nand_write_cycle(nand, cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
             free(cycle_data);
         }
@@ -151,7 +151,30 @@ size_t nand_write_addr_single(const nand_t* const nand, const uint16_t* const ad
     return ret_size;
 }
 
-size_t nand_write_io(const nand_t* const nand, const uint8_t* const data, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
+size_t nand_write_raw(const nand_t* const nand, const uint8_t* const data, const size_t data_size, const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
+    size_t ret_size = 0;
+
+    size_t seq = 0;
+    while(seq + 1 < data_size) {
+        ret_size += nand_write_cycle(nand, &(data[seq]), cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+
+        ++seq;
+        if(nand->data_bus_width == 16) {
+            ++seq;
+        }
+    }
+    if(seq + 1 == data_size) {
+        uint8_t* const cycle_data = (uint8_t*)malloc(sizeof(uint8_t) * 2);
+        cycle_data[1] = 0x00;
+        cycle_data[0] = data[seq];
+        ret_size += nand_write_cycle(nand, cycle_data, cycle_write_enable_post_delay_ns, cycle_write_disable_post_delay_ns);
+        free(cycle_data);
+    }
+
+    return ret_size;
+}
+
+size_t nand_write_io(const nand_t* const nand, const uint8_t data[2], const uint32_t cycle_write_enable_post_delay_ns, const uint32_t cycle_write_disable_post_delay_ns) {
     size_t ret_len = 0;
 
     nand_set_write_enable(nand);
@@ -191,7 +214,7 @@ size_t nand_write_io(const nand_t* const nand, const uint8_t* const data, const 
     return ret_len;
 }
 
-size_t nand_read_io(const nand_t* const nand, uint8_t* const out_data, const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
+size_t nand_read_io(const nand_t* const nand, uint8_t out_data[2], const uint32_t cycle_read_enable_post_delay_ns, const uint32_t cycle_read_disable_post_delay_ns) {
     size_t ret_len = 0;
 
     nand_set_read_enable(nand);

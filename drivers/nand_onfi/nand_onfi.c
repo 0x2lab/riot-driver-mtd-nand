@@ -204,7 +204,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
             {
                 nand_raw_t* const raw                   =   cycles->raw;
                 size_t*     const raw_size              = &(raw->raw_size);
-                uint16_t*   const buffer                =   raw->buffer;
+                uint8_t*    const buffer                =   raw->buffer;
                 size_t            buffer_size           =   raw->buffer_size;
                 size_t*     const current_buffer_seq    = &(raw->current_buffer_seq);
                 size_t*     const current_raw_offset    = &(raw->current_raw_offset);
@@ -296,7 +296,7 @@ size_t nand_onfi_run_cmd(nand_onfi_t* const nand_onfi, const nand_cmd_t* const c
     return rw_size;
 }
 
-size_t nand_onfi_template_cmdw_addrsgw_rawsgr(nand_onfi_t* const nand_onfi, const uint8_t this_lun_no, const nand_cmd_t* const cmd, uint16_t* const buffer, const size_t buffer_size) {
+size_t nand_onfi_template_cmdw_addrsgw_rawsgr(nand_onfi_t* const nand_onfi, const uint8_t this_lun_no, const nand_cmd_t* const cmd, uint8_t* const buffer, const size_t buffer_size) {
     nand_rw_response_t* err = (nand_rw_response_t *)malloc(sizeof(nand_rw_response_t));
 
     nand_raw_t* raw_store = (nand_raw_t*)malloc(sizeof(nand_raw_t));
@@ -330,7 +330,7 @@ size_t nand_onfi_template_cmdw_addrsgw_rawsgr(nand_onfi_t* const nand_onfi, cons
     return raw_read_size;
 }
 
-size_t nand_onfi_read_id(nand_onfi_t* const nand_onfi, const uint8_t this_lun_no, const nand_cmd_t* const id_cmd, uint16_t* const bytes_id, const size_t bytes_id_max_size) {
+size_t nand_onfi_read_id(nand_onfi_t* const nand_onfi, const uint8_t this_lun_no, const nand_cmd_t* const id_cmd, uint8_t* const bytes_id, const size_t bytes_id_max_size) {
     const size_t raw_read_size  = nand_onfi_template_cmdw_addrsgw_rawsgr(nand_onfi, this_lun_no, id_cmd, bytes_id, bytes_id_max_size);
 
     for(size_t pos = raw_read_size; pos < bytes_id_max_size; ++pos) {
@@ -340,7 +340,7 @@ size_t nand_onfi_read_id(nand_onfi_t* const nand_onfi, const uint8_t this_lun_no
     return nand_extract_id(bytes_id, raw_read_size);
 }
 
-size_t nand_onfi_read_parameter_page(nand_onfi_t* const nand_onfi, const uint8_t this_lun_no, const nand_cmd_t* const pp_cmd, uint16_t* const bytes_pp, const size_t bytes_pp_max_size) {
+size_t nand_onfi_read_parameter_page(nand_onfi_t* const nand_onfi, const uint8_t this_lun_no, const nand_cmd_t* const pp_cmd, uint8_t* const bytes_pp, const size_t bytes_pp_max_size) {
     const size_t raw_read_size  = nand_onfi_template_cmdw_addrsgw_rawsgr(nand_onfi, this_lun_no, pp_cmd, bytes_pp, bytes_pp_max_size);
     const bool   is_DDR         = nand_check_DDR(bytes_pp, raw_read_size);
     const size_t folded_size    = is_DDR ? nand_fold_DDR_repeat_bytes(bytes_pp, raw_read_size, 0x00) : raw_read_size;
