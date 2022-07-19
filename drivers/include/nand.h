@@ -196,6 +196,8 @@ struct _nand_params_t {
 };
 
 struct _nand_t {
+    bool                init_done;                 /**< set to true once the init procedure completed successfully */
+
     uint8_t             nand_id[NAND_MAX_ID_SIZE];
     uint8_t             nand_id_size;
 
@@ -218,9 +220,7 @@ struct _nand_t {
 
     uint8_t             programs_per_page;
 
-    bool                init_done;                 /**< set to true once the init procedure completed successfully */
-
-    nand_params_t  params;
+    nand_params_t       params;
 };
 
 int nand_init(nand_t* const nand, nand_params_t* const params);
