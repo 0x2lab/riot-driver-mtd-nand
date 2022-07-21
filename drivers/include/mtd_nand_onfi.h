@@ -7,7 +7,7 @@
  */
 
 /**
- * @defgroup    drivers_mtd_nand mtd wrapper for nand_onfi
+ * @defgroup    drivers_mtd_nand_onfi mtd wrapper for nand_onfi
  * @ingroup     drivers_storage
  * @brief       Driver for ONFI NANDs using mtd interface
  *
@@ -19,9 +19,11 @@
  * @author      Jongmin Kim <jmkim@pukyong.ac.kr>
  */
 
-#ifndef MTD_NAND_H
-#define MTD_NAND_H
+#ifndef MTD_NAND_ONFI_H
+#define MTD_NAND_ONFI_H
 
+#include "nand.h"
+#include "nand_cmd.h"
 #include "nand/onfi.h"
 #include "mtd.h"
 
@@ -31,15 +33,15 @@ extern "C"
 #endif
 
 /**
- * @brief   Device descriptor for mtd_nand device
+ * @brief   Device descriptor for mtd_nand_onfi device
  *
  * This is an extension of the @c mtd_dev_t struct
  */
 typedef struct {
-    mtd_dev_t base;                    /**< inherit from mtd_dev_t object */
-    nand_onfi_t *nand;                 /**< nand_onfi dev descriptor */
-    const nand_onfi_params_t *params;  /**< params for nand_onfi init */
-} mtd_nand_t;
+    mtd_dev_t base;                 /**< inherit from mtd_dev_t object */
+    nand_onfi_t *nand;              /**< nand_onfi dev descriptor */
+    const nand_params_t *params;    /**< params for nand_onfi init */
+} mtd_nand_onfi_t;
 
 /**
  * @brief   nand device operations table for mtd
@@ -50,5 +52,5 @@ extern const mtd_desc_t mtd_nand_driver;
 }
 #endif
 
-#endif /* MTD_NAND_H */
+#endif /* MTD_NAND_ONFI_H */
 /** @} */

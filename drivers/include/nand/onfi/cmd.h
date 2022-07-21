@@ -109,6 +109,57 @@ static const nand_cmd_t NAND_ONFI_CMD_READ_PARAMETER_PAGE = {
         }
     };
 
+static const nand_cmd_t NAND_ONFI_CMD_PAGE_PROGRAM = {
+    .chains_length = 4,
+    .chains = {
+        {
+            .cycles_defined             = true,
+            .timings                    = NAND_ONFI_CMD_TIMING_CMD_WRITE_READY_THIS_LUN,
+            .cycles_type                = NAND_CMD_TYPE_CMD_WRITE,
+            .cycles                     = { .cmd = 0x80 },
+        },
+        {
+            .cycles_defined             = false,
+            .timings                    = NAND_ONFI_CMD_TIMING_ADDR_WRITE,
+            .cycles_type                = NAND_CMD_TYPE_ADDR_WRITE,
+        },
+        {
+            .cycles_defined             = true,
+            .timings                    = NAND_ONFI_CMD_TIMING_CMD_WRITE_POST_DELAY,
+            .cycles_type                = NAND_CMD_TYPE_CMD_WRITE,
+            .cycles                     = { .cmd = 0x10 }
+        },
+        {
+            .cycles_defined             = false,
+            .timings                    = NAND_ONFI_CMD_TIMING_RAW_WRITE,
+            .cycles_type                = NAND_CMD_TYPE_RAW_WRITE
+        }
+    }
+};
+
+static const nand_cmd_t NAND_ONFI_CMD_BLOCK_ERASE = {
+    .chains_length = 3,
+    .chains = {
+        {
+            .cycles_defined             = true,
+            .timings                    = NAND_ONFI_CMD_TIMING_CMD_WRITE_READY_THIS_LUN,
+            .cycles_type                = NAND_CMD_TYPE_CMD_WRITE,
+            .cycles                     = { .cmd = 0x60 },
+        },
+        {
+            .cycles_defined             = false,
+            .timings                    = NAND_ONFI_CMD_TIMING_ADDR_WRITE,
+            .cycles_type                = NAND_CMD_TYPE_ADDR_ROW_WRITE,
+        },
+        {
+            .cycles_defined             = true,
+            .timings                    = NAND_ONFI_CMD_TIMING_CMD_WRITE_POST_DELAY,
+            .cycles_type                = NAND_CMD_TYPE_CMD_WRITE,
+            .cycles                     = { .cmd = 0xD0 }
+        }
+    }
+};
+
 
 #if 0
 static const nand_cmd_t NAND_ONFI_CMD_READ_CACHE_RANDOM              = { .cmd_data = { 0x00, 0x31 }, .params = NAND_ONFI_CMD_PARAM_OPTIONAL | NAND_ONFI_CMD_PARAM_ALLOW_OTHER_BUSY_LUN };

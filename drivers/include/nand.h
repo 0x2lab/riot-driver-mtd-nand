@@ -292,6 +292,10 @@ static inline size_t nand_all_pages_count(const nand_t* const nand) {
     return nand->pages_per_block * nand->blocks_per_lun * nand->lun_count;
 }
 
+static inline size_t nand_one_lun_pages_count(const nand_t* const nand) {
+    return nand_all_pages_count(nand) / nand->lun_count;
+}
+
 static inline size_t nand_one_page_size(const nand_t* const nand) {
     return nand->data_bytes_per_page + nand->spare_bytes_per_page;
 }
@@ -308,12 +312,16 @@ static inline size_t nand_all_pages_size(const nand_t* const nand) {
     return nand_all_data_bytes_size(nand) + nand_all_spare_bytes_size(nand);
 }
 
+static inline size_t nand_one_lun_pages_size(const nand_t* const nand) {
+    return nand_all_pages_size(nand) / nand->lun_count;
+}
+
 static inline uint64_t nand_offset_to_addr_column(const uint64_t offset) {
     return offset;
 }
 
-static inline uint64_t nand_page_num_to_addr_row(const uint64_t page_num) {
-    return page_num;
+static inline uint64_t nand_page_no_to_addr_row(const uint64_t page_no) {
+    return page_no;
 }
 
 static inline uint64_t nand_addr_flat_to_addr_column(const nand_t* const nand, const uint64_t addr_flat) {
