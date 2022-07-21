@@ -124,15 +124,15 @@ static const nand_cmd_t NAND_ONFI_CMD_PAGE_PROGRAM = {
             .cycles_type                = NAND_CMD_TYPE_ADDR_WRITE,
         },
         {
+            .cycles_defined             = false,
+            .timings                    = NAND_ONFI_CMD_TIMING_RAW_WRITE,
+            .cycles_type                = NAND_CMD_TYPE_RAW_WRITE
+        },
+        {
             .cycles_defined             = true,
             .timings                    = NAND_ONFI_CMD_TIMING_CMD_WRITE_POST_DELAY,
             .cycles_type                = NAND_CMD_TYPE_CMD_WRITE,
             .cycles                     = { .cmd = 0x10 }
-        },
-        {
-            .cycles_defined             = false,
-            .timings                    = NAND_ONFI_CMD_TIMING_RAW_WRITE,
-            .cycles_type                = NAND_CMD_TYPE_RAW_WRITE
         }
     }
 };

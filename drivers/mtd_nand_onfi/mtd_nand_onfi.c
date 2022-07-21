@@ -149,8 +149,8 @@ static int mtd_nand_onfi_write(mtd_dev_t* const dev, const void* const write_buf
                 cmd_mutable->chains[1].cycles_defined   = true;
                 cmd_mutable->chains[1].cycles.addr[0]   = addr_column;
                 cmd_mutable->chains[1].cycles.addr[1]   = addr_row;
-                cmd_mutable->chains[3].cycles_defined   = true;
-                cmd_mutable->chains[3].cycles.raw       = raw_store;
+                cmd_mutable->chains[2].cycles_defined   = true;
+                cmd_mutable->chains[2].cycles.raw       = raw_store;
 
           nand_cmd_params_t*  const cmd_params          = (nand_cmd_params_t*)malloc(sizeof(nand_cmd_params_t));
                 cmd_params->lun_no                      = lun_no;
@@ -196,8 +196,8 @@ static int mtd_nand_onfi_write_page(mtd_dev_t * const dev, const void * const wr
                 cmd_mutable->chains[1].cycles_defined   = true;
                 cmd_mutable->chains[1].cycles.addr[0]   = addr_column;
                 cmd_mutable->chains[1].cycles.addr[1]   = addr_row;
-                cmd_mutable->chains[3].cycles_defined   = true;
-                cmd_mutable->chains[3].cycles.raw       = raw_store;
+                cmd_mutable->chains[2].cycles_defined   = true;
+                cmd_mutable->chains[2].cycles.raw       = raw_store;
 
           nand_cmd_params_t*  const cmd_params          = (nand_cmd_params_t*)malloc(sizeof(nand_cmd_params_t));
                 cmd_params->lun_no                      = lun_no;
