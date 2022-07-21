@@ -306,7 +306,7 @@ size_t nand_cmd_base_cmdw_addrsgw_rawsgr(nand_t* const nand, const uint8_t this_
 }
 
 size_t nand_cmd_read_id(nand_t* const nand, const uint8_t this_lun_no, const nand_cmd_t* const id_cmd, uint8_t* const bytes_id, const size_t bytes_id_max_size) {
-    const size_t raw_read_size  = nand_onfi_cmd_base_cmdw_addrsgw_rawsgr(nand, this_lun_no, id_cmd, bytes_id, bytes_id_max_size);
+    const size_t raw_read_size  = nand_cmd_base_cmdw_addrsgw_rawsgr(nand, this_lun_no, id_cmd, bytes_id, bytes_id_max_size);
 
     for(size_t pos = raw_read_size; pos < bytes_id_max_size; ++pos) {
         bytes_id[pos] = 0x00;
@@ -316,7 +316,7 @@ size_t nand_cmd_read_id(nand_t* const nand, const uint8_t this_lun_no, const nan
 }
 
 size_t nand_cmd_read_parameter_page(nand_t* const nand, const uint8_t this_lun_no, const nand_cmd_t* const pp_cmd, uint8_t* const bytes_pp, const size_t bytes_pp_max_size) {
-    const size_t raw_read_size  = nand_onfi_cmd_base_cmdw_addrsgw_rawsgr(nand, this_lun_no, pp_cmd, bytes_pp, bytes_pp_max_size);
+    const size_t raw_read_size  = nand_cmd_base_cmdw_addrsgw_rawsgr(nand, this_lun_no, pp_cmd, bytes_pp, bytes_pp_max_size);
     const bool   is_DDR         = nand_check_DDR(bytes_pp, raw_read_size);
     const size_t folded_size    = is_DDR ? nand_fold_DDR_repeat_bytes(bytes_pp, raw_read_size, 0x00) : raw_read_size;
 
