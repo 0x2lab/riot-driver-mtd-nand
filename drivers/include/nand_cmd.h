@@ -49,6 +49,7 @@ typedef union  _nand_cmd_cycles_t         nand_cmd_cycles_t;
 typedef struct _nand_cmd_chain_t          nand_cmd_chain_t;
 typedef struct _nand_cmd_t                nand_cmd_t;
 typedef struct _nand_cmd_params_t         nand_cmd_params_t;
+typedef void (*nand_hook_cb_t)(nand_t* const nand, const nand_cmd_t* const cmd, nand_cmd_params_t* const cmd_params, const size_t current_chain_seq, nand_cmd_chain_t* current_chain);
 
 struct _nand_cmd_timings_t {
     uint32_t                    pre_delay_ns;

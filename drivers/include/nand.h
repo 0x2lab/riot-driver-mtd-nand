@@ -89,7 +89,6 @@ typedef struct _nand_params_t             nand_params_t;
 typedef struct _nand_chip_t               nand_chip_t;
 typedef struct _nand_prop_t               nand_prop_t;
 typedef struct _nand_t                    nand_t;
-typedef void (*nand_hook_cb_t)(nand_t* const nand, const nand_cmd_t* const cmd, nand_cmd_params_t* const cmd_params, const size_t current_chain_seq, nand_cmd_chain_t* current_chain);
 
 /**
  * @brief   nand device params
