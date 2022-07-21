@@ -7,31 +7,40 @@
 #include "nand/onfi.h"
 #include "mtd.h"
 
+#include <stdlib.h>
 #include <errno.h>
 
-static int mtd_nand_init(mtd_dev_t *dev)
+static int mtd_nand_onfi_init(mtd_dev_t* const dev)
 {
-    DEBUG("mtd_nand_init\n");
-    mtd_nand_onfi_t* const mtd_nand_onfi = (mtd_nand_onfi_t*)dev;
-    nand_t* const nand = (nand_t*)dev
-
-    if((mtd_nand_onfi->nand->init_done == true) ||
-        (nand_onfi_init(mtd_nand->nand, mtd_nand->params) == 0))
-    {
-        dev->sector_count = nand_onfi_all_pages_count(mtd_nand->nand);
-        dev->page_size = nand_onfi_one_page_size(mtd_nand->nand);
-        dev->pages_per_sector = mtd_nand->nand->pages_per_block; /**< NAND is intended to use one block per one access */
-
-        return 0;
+    if(dev == NULL) {
+        return -ENODEV;
     }
 
-    return -EIO;
+    mtd_nand_onfi_t*    const mtd_nand  = (mtd_nand_onfi_t*)dev;
+    if(mtd_nand->nand_onfi == NULL) {
+        return -ENODEV;
+    }
+
+    nand_t*             const nand      = (nand_t*)&(mtd_nand->nand_onfi);
+    if(mtd_nand->params != NULL && ! nand->init_done && nand_onfi_init(mtd_nand->nand_onfi, mtd_nand->params) != NAND_INIT_OK) {
+        return -EIO;
+    }
+
+    if(! nand->init_done) {
+        return -EIO;
+    }
+
+    dev->sector_count       = nand_onfi_all_block_count(nand);
+    dev->page_size          = nand_onfi_one_page_size(mtd_nand->nand_onfi);
+    dev->pages_per_sector   = nand->pages_per_block;    /**< NAND is intended to use one block per one access */
+
+    return 0;
 }
 
-static int mtd_nand_read(mtd_dev_t* const dev, void* const read_buffer, const uint32_t addr_flat, const uint32_t size)
+static int mtd_nand_onfi_read(mtd_dev_t* const dev, void* const read_buffer, const uint32_t addr_flat, const uint32_t size)
 {
           mtd_nand_onfi_t *   const mtd_nand            = (mtd_nand_onfi_t*)dev;
-          nand_t*             const nand                = (nand_t*)&(mtd_nand->nand);
+          nand_t*             const nand                = (nand_t*)&(mtd_nand->nand_onfi);
     const uint64_t                  column_addr         = nand_addr_flat_to_addr_column(nand, addr_flat);
     const uint64_t                  row_addr            = nand_addr_flat_to_addr_row(nand, addr_flat);
     const uint8_t                   lun_no              = addr_flat / nand_one_lun_pages_size(nand); // TODO: lun_no looks invalid
@@ -72,10 +81,10 @@ static int mtd_nand_read(mtd_dev_t* const dev, void* const read_buffer, const ui
     return size;
 }
 
-static int mtd_nand_read_page(mtd_dev_t* const dev, void* const read_buffer, const uint32_t page_no, const uint32_t offset, const uint32_t size)
+static int mtd_nand_onfi_read_page(mtd_dev_t* const dev, void* const read_buffer, const uint32_t page_no, const uint32_t offset, const uint32_t size)
 {
           mtd_nand_onfi_t *   const mtd_nand            = (mtd_nand_onfi_t*)dev;
-          nand_t*             const nand                = (nand_t*)&(mtd_nand->nand);
+          nand_t*             const nand                = (nand_t*)&(mtd_nand->nand_onfi);
     const uint64_t                  column_addr         = nand_offset_to_addr_column(offset);
     const uint64_t                  row_addr            = nand_page_no_to_addr_row(page_no);
     const uint8_t                   lun_no              = page_no / nand_one_lun_pages_count(nand); // TODO: lun_no looks invalid
@@ -118,10 +127,10 @@ static int mtd_nand_read_page(mtd_dev_t* const dev, void* const read_buffer, con
     return raw_size;
 }
 
-static int mtd_nand_write(mtd_dev_t* const dev, const void* const write_buffer, const uint32_t addr_flat, const uint32_t size)
+static int mtd_nand_onfi_write(mtd_dev_t* const dev, const void* const write_buffer, const uint32_t addr_flat, const uint32_t size)
 {
           mtd_nand_onfi_t *   const mtd_nand            = (mtd_nand_onfi_t*)dev;
-          nand_t*             const nand                = (nand_t*)&(mtd_nand->nand);
+          nand_t*             const nand                = (nand_t*)&(mtd_nand->nand_onfi);
     const uint64_t                  column_addr         = nand_addr_flat_to_addr_column(nand, addr_flat);
     const uint64_t                  row_addr            = nand_addr_flat_to_addr_row(nand, addr_flat);
     const uint8_t                   lun_no              = addr_flat / nand_one_lun_pages_size(nand); // TODO: lun_no looks invalid
@@ -159,14 +168,14 @@ static int mtd_nand_write(mtd_dev_t* const dev, const void* const write_buffer, 
     }
 
     free(err);
-    return raw_size;
+    return size;
 
 }
 
-static int mtd_nand_write_page(mtd_dev_t * const dev, const void * const write_buffer, const uint32_t page_no, const uint32_t offset, const uint32_t size)
+static int mtd_nand_onfi_write_page(mtd_dev_t * const dev, const void * const write_buffer, const uint32_t page_no, const uint32_t offset, const uint32_t size)
 {
           mtd_nand_onfi_t *   const mtd_nand            = (mtd_nand_onfi_t*)dev;
-          nand_t*             const nand                = (nand_t*)&(mtd_nand->nand);
+          nand_t*             const nand                = (nand_t*)&(mtd_nand->nand_onfi);
     const uint64_t                  column_addr         = nand_offset_to_addr_column(offset);
     const uint64_t                  row_addr            = nand_page_no_to_addr_row(page_no);
     const uint8_t                   lun_no              = page_no / nand_one_lun_pages_count(nand); // TODO: lun_no looks invalid
@@ -209,10 +218,14 @@ static int mtd_nand_write_page(mtd_dev_t * const dev, const void * const write_b
     return raw_size;
 }
 
-static int mtd_nand_erase_block(mtd_dev_t* const dev, const uint32_t block_no, const uint32_t count)
+static int mtd_nand_onfi_erase(mtd_dev_t* const dev, const uint32_t addr_flat, const uint32_t count) {
+    return -ENOTSUP;
+}
+
+static int mtd_nand_onfi_erase_block(mtd_dev_t* const dev, const uint32_t block_no, const uint32_t count)
 {
     mtd_nand_onfi_t *   const mtd_nand  = (mtd_nand_onfi_t*)dev;
-    nand_t*             const nand      = (nand_t*)&(mtd_nand->nand);
+    nand_t*             const nand      = (nand_t*)&(mtd_nand->nand_onfi);
     nand_rw_response_t* const err       = (nand_rw_response_t *)malloc(sizeof(nand_rw_response_t));
 
     for(uint32_t erasure_pos = block_no; erasure_pos < block_no + count; ++erasure_pos) {
@@ -243,10 +256,10 @@ static int mtd_nand_erase_block(mtd_dev_t* const dev, const uint32_t block_no, c
     return count;
 }
 
-static int mtd_nand_power(mtd_dev_t *dev, enum mtd_power_state power)
+static int mtd_nand_onfi_power(mtd_dev_t *dev, enum mtd_power_state power)
 {
     mtd_nand_onfi_t *   const mtd_nand  = (mtd_nand_onfi_t*)dev;
-    nand_t*             const nand      = (nand_t*)&(mtd_nand->nand);
+    nand_t*             const nand      = (nand_t*)&(mtd_nand->nand_onfi);
 
     switch(power) {
     case MTD_POWER_UP:
@@ -266,11 +279,12 @@ static int mtd_nand_power(mtd_dev_t *dev, enum mtd_power_state power)
 }
 
 const mtd_desc_t mtd_nand_driver = {
-    .init = mtd_nand_init,
-    .read = mtd_nand_read,
-    .read_page = mtd_nand_read_page,
-    .write = mtd_nand_write,
-    .write_page = mtd_nand_write_page,
-    .erase_sector = mtd_nand_erase_block,
-    .power = mtd_nand_power,
+    .init           = mtd_nand_onfi_init,
+    .read           = mtd_nand_onfi_read,
+    .read_page      = mtd_nand_onfi_read_page,
+    .write          = mtd_nand_onfi_write,
+    .write_page     = mtd_nand_onfi_write_page,
+    .erase          = mtd_nand_onfi_erase,
+    .erase_sector   = mtd_nand_onfi_erase_block,
+    .power          = mtd_nand_onfi_power,
 };

@@ -39,8 +39,8 @@ extern "C"
  */
 typedef struct {
     mtd_dev_t base;                 /**< inherit from mtd_dev_t object */
-    nand_onfi_t *nand;              /**< nand_onfi dev descriptor */
-    const nand_params_t *params;    /**< params for nand_onfi init */
+    nand_onfi_t* nand_onfi;         /**< nand_onfi dev descriptor */
+    const nand_params_t* params;    /**< params for nand_onfi init */
 } mtd_nand_onfi_t;
 
 /**
