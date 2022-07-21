@@ -272,25 +272,25 @@ size_t nand_run_cmd_chains(nand_t* const nand, const nand_cmd_t* const cmd, nand
 }
 
 size_t nand_cmd_base_cmdw_addrsgw_rawsgr(nand_t* const nand, const uint8_t this_lun_no, const nand_cmd_t* const cmd, uint8_t* const buffer, const size_t buffer_size) {
-    nand_rw_response_t* err                 = (nand_rw_response_t *)malloc(sizeof(nand_rw_response_t));
+          nand_rw_response_t*   const err               = (nand_rw_response_t *)malloc(sizeof(nand_rw_response_t));
 
-    nand_raw_t* raw_store                   = (nand_raw_t*)malloc(sizeof(nand_raw_t));
-    raw_store->raw_size                     = buffer_size;
-    raw_store->buffer                       = buffer;
-    raw_store->buffer_size                  = buffer_size;
-    raw_store->current_buffer_seq           = 0;
-    raw_store->current_raw_offset           = 0;
+          nand_raw_t*           const raw_store         = (nand_raw_t*)malloc(sizeof(nand_raw_t));
+                raw_store->raw_size                     = buffer_size;
+                raw_store->buffer                       = buffer;
+                raw_store->buffer_size                  = buffer_size;
+                raw_store->current_buffer_seq           = 0;
+                raw_store->current_raw_offset           = 0;
 
-    nand_cmd_t* cmd_mutable                 = (nand_cmd_t*)malloc(sizeof(nand_cmd_t));
-    memcpy(cmd_mutable, cmd, sizeof(nand_cmd_t));
-    cmd_mutable->chains[2].cycles_defined   = true;
-    cmd_mutable->chains[2].cycles.raw       = raw_store;
+          nand_cmd_t*           const cmd_mutable       = (nand_cmd_t*)malloc(sizeof(nand_cmd_t));
+                memcpy(cmd_mutable, cmd, sizeof(nand_cmd_t));
+                cmd_mutable->chains[2].cycles_defined   = true;
+                cmd_mutable->chains[2].cycles.raw       = raw_store;
 
-    nand_cmd_params_t* cmd_params           = (nand_cmd_params_t*)malloc(sizeof(nand_cmd_params_t));
-    cmd_params->lun_no                      = this_lun_no;
-    cmd_params->cmd_override                = cmd_mutable;
+          nand_cmd_params_t*    const cmd_params        = (nand_cmd_params_t*)malloc(sizeof(nand_cmd_params_t));
+                cmd_params->lun_no                      = this_lun_no;
+                cmd_params->cmd_override                = cmd_mutable;
 
-    const size_t raw_read_size              = nand_run_cmd_chains(nand, cmd, cmd_params, err) - 2;
+    const size_t                      raw_read_size     = nand_run_cmd_chains(nand, cmd, cmd_params, err) - 2;
 
     free(cmd_params);
     free(cmd_mutable);

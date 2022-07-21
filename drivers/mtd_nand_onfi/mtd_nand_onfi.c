@@ -41,8 +41,8 @@ static int mtd_nand_onfi_read(mtd_dev_t* const dev, void* const read_buffer, con
 {
           mtd_nand_onfi_t *   const mtd_nand            = (mtd_nand_onfi_t*)dev;
           nand_t*             const nand                = (nand_t*)&(mtd_nand->nand_onfi);
-    const uint64_t                  column_addr         = nand_addr_flat_to_addr_column(nand, addr_flat);
-    const uint64_t                  row_addr            = nand_addr_flat_to_addr_row(nand, addr_flat);
+    const uint64_t                  addr_column         = nand_addr_flat_to_addr_column(nand, addr_flat);
+    const uint64_t                  addr_row            = nand_addr_flat_to_addr_row(nand, addr_flat);
     const uint8_t                   lun_no              = addr_flat / nand_one_lun_pages_size(nand); // TODO: lun_no looks invalid
 
           nand_rw_response_t* const err                 = (nand_rw_response_t *)malloc(sizeof(nand_rw_response_t));
@@ -57,8 +57,8 @@ static int mtd_nand_onfi_read(mtd_dev_t* const dev, void* const read_buffer, con
           nand_cmd_t*         const cmd_mutable         = (nand_cmd_t*)malloc(sizeof(nand_cmd_t));
                 memcpy(cmd_mutable, &NAND_ONFI_CMD_READ, sizeof(nand_cmd_t));
                 cmd_mutable->chains[1].cycles_defined   = true;
-                cmd_mutable->chains[1].cycles.addr[0]   = column_addr;
-                cmd_mutable->chains[1].cycles.addr[1]   = row_addr;
+                cmd_mutable->chains[1].cycles.addr[0]   = addr_column;
+                cmd_mutable->chains[1].cycles.addr[1]   = addr_row;
                 cmd_mutable->chains[3].cycles_defined   = true;
                 cmd_mutable->chains[3].cycles.raw       = raw_store;
 
@@ -85,8 +85,8 @@ static int mtd_nand_onfi_read_page(mtd_dev_t* const dev, void* const read_buffer
 {
           mtd_nand_onfi_t *   const mtd_nand            = (mtd_nand_onfi_t*)dev;
           nand_t*             const nand                = (nand_t*)&(mtd_nand->nand_onfi);
-    const uint64_t                  column_addr         = nand_offset_to_addr_column(offset);
-    const uint64_t                  row_addr            = nand_page_no_to_addr_row(page_no);
+    const uint64_t                  addr_column         = nand_offset_to_addr_column(offset);
+    const uint64_t                  addr_row            = nand_page_no_to_addr_row(page_no);
     const uint8_t                   lun_no              = page_no / nand_one_lun_pages_count(nand); // TODO: lun_no looks invalid
     const size_t                    page_size           = nand_one_page_size(nand);
     const size_t                    raw_size            = (size < page_size) ? size : page_size; // TODO: Should throw error if size > page_size
@@ -103,8 +103,8 @@ static int mtd_nand_onfi_read_page(mtd_dev_t* const dev, void* const read_buffer
           nand_cmd_t*         const cmd_mutable         = (nand_cmd_t*)malloc(sizeof(nand_cmd_t));
                 memcpy(cmd_mutable, &NAND_ONFI_CMD_READ, sizeof(nand_cmd_t));
                 cmd_mutable->chains[1].cycles_defined   = true;
-                cmd_mutable->chains[1].cycles.addr[0]   = column_addr;
-                cmd_mutable->chains[1].cycles.addr[1]   = row_addr;
+                cmd_mutable->chains[1].cycles.addr[0]   = addr_column;
+                cmd_mutable->chains[1].cycles.addr[1]   = addr_row;
                 cmd_mutable->chains[3].cycles_defined   = true;
                 cmd_mutable->chains[3].cycles.raw       = raw_store;
 
@@ -131,8 +131,8 @@ static int mtd_nand_onfi_write(mtd_dev_t* const dev, const void* const write_buf
 {
           mtd_nand_onfi_t *   const mtd_nand            = (mtd_nand_onfi_t*)dev;
           nand_t*             const nand                = (nand_t*)&(mtd_nand->nand_onfi);
-    const uint64_t                  column_addr         = nand_addr_flat_to_addr_column(nand, addr_flat);
-    const uint64_t                  row_addr            = nand_addr_flat_to_addr_row(nand, addr_flat);
+    const uint64_t                  addr_column         = nand_addr_flat_to_addr_column(nand, addr_flat);
+    const uint64_t                  addr_row            = nand_addr_flat_to_addr_row(nand, addr_flat);
     const uint8_t                   lun_no              = addr_flat / nand_one_lun_pages_size(nand); // TODO: lun_no looks invalid
 
           nand_rw_response_t* const err                 = (nand_rw_response_t *)malloc(sizeof(nand_rw_response_t));
@@ -147,8 +147,8 @@ static int mtd_nand_onfi_write(mtd_dev_t* const dev, const void* const write_buf
           nand_cmd_t*         const cmd_mutable         = (nand_cmd_t*)malloc(sizeof(nand_cmd_t));
                 memcpy(cmd_mutable, &NAND_ONFI_CMD_PAGE_PROGRAM, sizeof(nand_cmd_t));
                 cmd_mutable->chains[1].cycles_defined   = true;
-                cmd_mutable->chains[1].cycles.addr[0]   = column_addr;
-                cmd_mutable->chains[1].cycles.addr[1]   = row_addr;
+                cmd_mutable->chains[1].cycles.addr[0]   = addr_column;
+                cmd_mutable->chains[1].cycles.addr[1]   = addr_row;
                 cmd_mutable->chains[3].cycles_defined   = true;
                 cmd_mutable->chains[3].cycles.raw       = raw_store;
 
@@ -176,8 +176,8 @@ static int mtd_nand_onfi_write_page(mtd_dev_t * const dev, const void * const wr
 {
           mtd_nand_onfi_t *   const mtd_nand            = (mtd_nand_onfi_t*)dev;
           nand_t*             const nand                = (nand_t*)&(mtd_nand->nand_onfi);
-    const uint64_t                  column_addr         = nand_offset_to_addr_column(offset);
-    const uint64_t                  row_addr            = nand_page_no_to_addr_row(page_no);
+    const uint64_t                  addr_column         = nand_offset_to_addr_column(offset);
+    const uint64_t                  addr_row            = nand_page_no_to_addr_row(page_no);
     const uint8_t                   lun_no              = page_no / nand_one_lun_pages_count(nand); // TODO: lun_no looks invalid
     const size_t                    page_size           = nand_one_page_size(nand);
     const size_t                    raw_size            = (size < page_size) ? size : page_size; // TODO: Should throw error if size > page_size
@@ -194,8 +194,8 @@ static int mtd_nand_onfi_write_page(mtd_dev_t * const dev, const void * const wr
           nand_cmd_t*         const cmd_mutable         = (nand_cmd_t*)malloc(sizeof(nand_cmd_t));
                 memcpy(cmd_mutable, &NAND_ONFI_CMD_PAGE_PROGRAM, sizeof(nand_cmd_t));
                 cmd_mutable->chains[1].cycles_defined   = true;
-                cmd_mutable->chains[1].cycles.addr[0]   = column_addr;
-                cmd_mutable->chains[1].cycles.addr[1]   = row_addr;
+                cmd_mutable->chains[1].cycles.addr[0]   = addr_column;
+                cmd_mutable->chains[1].cycles.addr[1]   = addr_row;
                 cmd_mutable->chains[3].cycles_defined   = true;
                 cmd_mutable->chains[3].cycles.raw       = raw_store;
 
@@ -229,13 +229,13 @@ static int mtd_nand_onfi_erase_block(mtd_dev_t* const dev, const uint32_t block_
     nand_rw_response_t* const err       = (nand_rw_response_t *)malloc(sizeof(nand_rw_response_t));
 
     for(uint32_t erasure_pos = block_no; erasure_pos < block_no + count; ++erasure_pos) {
-        const uint64_t                  row_addr            = nand_page_no_to_addr_row(erasure_pos);
+        const uint64_t                  addr_row            = nand_page_no_to_addr_row(erasure_pos);
         const uint8_t                   lun_no              = erasure_pos / nand->blocks_per_lun; // TODO: lun_no looks invalid
 
               nand_cmd_t*         const cmd_mutable         = (nand_cmd_t*)malloc(sizeof(nand_cmd_t));
                     memcpy(cmd_mutable, &NAND_ONFI_CMD_BLOCK_ERASE, sizeof(nand_cmd_t));
                     cmd_mutable->chains[1].cycles_defined   = true;
-                    cmd_mutable->chains[1].cycles.addr_row  = row_addr;
+                    cmd_mutable->chains[1].cycles.addr_row  = addr_row;
 
               nand_cmd_params_t*  const cmd_params          = (nand_cmd_params_t*)malloc(sizeof(nand_cmd_params_t));
                     cmd_params->lun_no                      = lun_no;
