@@ -7,7 +7,7 @@ extern "C" {
 
 #include <stdlib.h>
 
-#include "nand.h"
+#include "nand_cmd.h"
 #include "nand/onfi/cmd_timing.h"
 
 static const nand_cmd_t NAND_ONFI_CMD_READ = {
