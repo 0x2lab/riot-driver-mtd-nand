@@ -76,7 +76,8 @@ size_t nand_run_cmd_chains(nand_t* const nand, const nand_cmd_t* const cmd, nand
 
     print_byte_hex(lun_no);
     print_str("\r\n");
-    nand_set_chip_enable(nand, lun_no);
+    //nand_set_chip_enable(nand, lun_no);
+    nand_set_chip_enable(nand, 0);
 
     print_str("test:driver:4\r\n");
 
