@@ -5,7 +5,10 @@
 extern "C" {
 #endif
 
+#if 0
 #define NAND_ONFI_TIMING_NANOSEC(x)                 (x)
+#endif
+#define NAND_ONFI_TIMING_NANOSEC(x)                 (0)
 #define NAND_ONFI_TIMING_MICROSEC(x)                (NAND_ONFI_TIMING_NANOSEC(1000 * (x)))
 
 #define NAND_ONFI_TIMING_IGNORE                     (0)
