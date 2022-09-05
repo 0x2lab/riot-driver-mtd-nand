@@ -242,7 +242,9 @@ static inline void nand_set_chip_enable(const nand_t* const nand, const uint8_t 
     switch(lun_no) {
     case 0:
         {
+            print_str("test-ce0-0\r\n");
             gpio_write(nand->params.ce0, 0);
+            print_str("test-ce0-1\r\n");
         }
         break;
     case 1:
