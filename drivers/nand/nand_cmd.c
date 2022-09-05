@@ -84,6 +84,8 @@ size_t nand_run_cmd_chains(nand_t* const nand, const nand_cmd_t* const cmd, nand
         const nand_cmd_type_t            cycles_type    =   current_chain->cycles_type;
         const nand_cmd_cycles_t*   const cycles         = &(current_chain->cycles);
 
+        print_str("test:driver:3\r\n");
+
         if(! cycles_defined) {
             continue;
         }
