@@ -23,7 +23,6 @@
 
 #include "nand_cmd.h"
 #include "nand.h"
-#include "fmt.h"
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -39,16 +38,12 @@ size_t nand_run_cmd_chains(nand_t* const nand, const nand_cmd_t* const cmd, nand
         return 0;
     }
 
-    print_str("test:driver:1\r\n");
-
     const uint8_t                lun_no         = cmd_params->lun_no;
           nand_cmd_t*      const cmd_override   = cmd_params->cmd_override;
     const nand_hook_cb_t         pre_hook_cb    = (cmd_override != NULL && cmd_override->pre_hook_cb   != NULL)               ? cmd_override->pre_hook_cb   : cmd->pre_hook_cb;
     const nand_hook_cb_t         post_hook_cb   = (cmd_override != NULL && cmd_override->post_hook_cb  != NULL)               ? cmd_override->post_hook_cb  : cmd->post_hook_cb;
     const size_t                 chains_length  = (cmd_override != NULL && cmd_override->chains_length >  cmd->chains_length) ? cmd_override->chains_length : cmd->chains_length;
           nand_cmd_chain_t*      chains         = (nand_cmd_chain_t*)malloc(sizeof(nand_cmd_chain_t) * chains_length);
-
-    print_str("test:driver:2\r\n");
 
     if(chains_length > NAND_MAX_COMMAND_CYCLE_SIZE) {
         if(err != NULL) {
@@ -70,28 +65,12 @@ size_t nand_run_cmd_chains(nand_t* const nand, const nand_cmd_t* const cmd, nand
         }
     }
 
-    print_str("test:driver:3\r\n");
-
     size_t rw_size = 0;
 
-    print_byte_hex(lun_no);
-    print_str("\r\n");
-    //nand_set_chip_enable(nand, lun_no);
-    nand_set_chip_enable(nand, 0);
-
-    print_str("test:driver:4\r\n");
-
+    nand_set_chip_enable(nand, lun_no);
     nand_set_write_protect_disable(nand);
-
-    print_str("test:driver:5\r\n");
-
     nand_set_read_disable(nand);
-
-    print_str("test:driver:6\r\n");
-
     nand_set_write_disable(nand);
-
-    print_str("test:driver:7\r\n");
 
     for(size_t seq = 0; seq < chains_length; ++seq) {
               nand_cmd_chain_t*    const current_chain  = &(chains[seq]);
@@ -99,8 +78,6 @@ size_t nand_run_cmd_chains(nand_t* const nand, const nand_cmd_t* const cmd, nand
         const nand_cmd_timings_t*  const timings        = &(current_chain->timings);
         const nand_cmd_type_t            cycles_type    =   current_chain->cycles_type;
         const nand_cmd_cycles_t*   const cycles         = &(current_chain->cycles);
-
-        print_str("test:driver:4\r\n");
 
         if(! cycles_defined) {
             continue;
