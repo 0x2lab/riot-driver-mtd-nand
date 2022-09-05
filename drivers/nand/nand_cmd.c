@@ -75,9 +75,20 @@ size_t nand_run_cmd_chains(nand_t* const nand, const nand_cmd_t* const cmd, nand
     size_t rw_size = 0;
 
     nand_set_chip_enable(nand, lun_no);
+
+    print_str("test:driver:4\r\n");
+
     nand_set_write_protect_disable(nand);
+
+    print_str("test:driver:5\r\n");
+
     nand_set_read_disable(nand);
+
+    print_str("test:driver:6\r\n");
+
     nand_set_write_disable(nand);
+
+    print_str("test:driver:7\r\n");
 
     for(size_t seq = 0; seq < chains_length; ++seq) {
               nand_cmd_chain_t*    const current_chain  = &(chains[seq]);
