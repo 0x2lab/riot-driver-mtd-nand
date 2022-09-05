@@ -244,6 +244,8 @@ static inline void nand_set_chip_enable(const nand_t* const nand, const uint8_t 
     case 0:
         {
             print_str("test-ce0-0\r\n");
+            print_byte_hex(nand->params.ce0);
+            print_str("\r\n");
             gpio_write(nand->params.ce0, 0);
             print_str("test-ce0-1\r\n");
         }
