@@ -23,6 +23,7 @@
 
 #include "nand_cmd.h"
 #include "nand.h"
+#include "fmt.h"
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -38,12 +39,16 @@ size_t nand_run_cmd_chains(nand_t* const nand, const nand_cmd_t* const cmd, nand
         return 0;
     }
 
+    print_str("test:driver:1\r\n");
+
     const uint8_t                lun_no         = cmd_params->lun_no;
           nand_cmd_t*      const cmd_override   = cmd_params->cmd_override;
     const nand_hook_cb_t         pre_hook_cb    = (cmd_override != NULL && cmd_override->pre_hook_cb   != NULL)               ? cmd_override->pre_hook_cb   : cmd->pre_hook_cb;
     const nand_hook_cb_t         post_hook_cb   = (cmd_override != NULL && cmd_override->post_hook_cb  != NULL)               ? cmd_override->post_hook_cb  : cmd->post_hook_cb;
     const size_t                 chains_length  = (cmd_override != NULL && cmd_override->chains_length >  cmd->chains_length) ? cmd_override->chains_length : cmd->chains_length;
           nand_cmd_chain_t*      chains         = (nand_cmd_chain_t*)malloc(sizeof(nand_cmd_chain_t) * chains_length);
+
+    print_str("test:driver:2\r\n");
 
     if(chains_length > NAND_MAX_COMMAND_CYCLE_SIZE) {
         if(err != NULL) {
