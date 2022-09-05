@@ -31,6 +31,7 @@ extern "C" {
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "fmt.h"
 #include "periph/gpio.h"
 #include "ztimer.h"
 
