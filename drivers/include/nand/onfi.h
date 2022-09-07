@@ -135,20 +135,8 @@ typedef struct __attribute__ ((packed)) {
 } nand_onfi_chip_t;
 
 typedef struct {
-    nand_onfi_version_t version;            /**< ONFI version (BCD encoded), 0 if ONFI is not supported */
-    uint16_t            t_prog;             /**< Page program time */
-    uint16_t            t_bers;             /**< Block erase time */
-    uint16_t            t_r;                /**< Page read time */
-    uint16_t            t_ccs;              /**< Change column setup time */
-    bool                fast_t_cad;         /**< Command/Address/Data slow or fast delay (NV-DDR only) */
-    uint16_t            sdr_timing_modes;   /**< Supported asynchronous/SDR timing modes */
-    uint16_t            nvddr_timing_modes; /**< Supported source synchronous/NV-DDR timing modes */
-} nand_onfi_prop_t;
-
-typedef struct {
     nand_t              nand;
     nand_onfi_chip_t    onfi_chip;
-    nand_onfi_prop_t    onfi_prop;
 } nand_onfi_t;
 
 int nand_onfi_init(nand_onfi_t* const nand_onfi, nand_params_t* const params);

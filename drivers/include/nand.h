@@ -85,6 +85,12 @@ typedef enum {
     NAND_RW_CMD_CHAIN_TOO_LONG
 } nand_rw_response_t;
 
+typedef enum {
+    NAND_STD_UNKNWOWN,
+    NAND_STD_ONFI,
+    NAND_STD_SAMSUNG
+} nand_std_t;
+
 typedef struct _nand_params_t             nand_params_t;
 typedef struct _nand_chip_t               nand_chip_t;
 typedef struct _nand_prop_t               nand_prop_t;
@@ -134,6 +140,9 @@ struct _nand_t {
     uint8_t             sig[NAND_MAX_SIG_SIZE];
     uint8_t             sig_size;
 
+    uint8_t             maker_code;
+    uint8_t             device_code;
+
     uint8_t             data_bus_width;
     uint8_t             addr_bus_width;
 
@@ -150,6 +159,7 @@ struct _nand_t {
 
     uint8_t             programs_per_page;
 
+    nand_std_t          standard_type;
     nand_params_t       params;
 };
 

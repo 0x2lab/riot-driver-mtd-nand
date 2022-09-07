@@ -37,7 +37,7 @@ int nand_onfi_init(nand_onfi_t* const nand_onfi, nand_params_t* const params) {
         return NAND_INIT_ERROR;
     }
 
-    nand_t* nand = (nand_t*)nand_onfi;
+    nand_t* const nand = (nand_t*)nand_onfi;
     nand->init_done = false;
 
     if(params == NULL) {
@@ -65,6 +65,9 @@ int nand_onfi_init(nand_onfi_t* const nand_onfi, nand_params_t* const params) {
         return NAND_INIT_PARAMETER_PAGE_TOO_SHORT;
     }
 
+    nand->maker_code            = nand->nand_id[0];
+    nand->device_code           = nand->nand_id[1];
+
     nand->data_bus_width        = (nand_onfi->onfi_chip.features & 0x1) ? 16 : 8;
     nand->addr_bus_width        = 8;
 
@@ -81,7 +84,7 @@ int nand_onfi_init(nand_onfi_t* const nand_onfi, nand_params_t* const params) {
     nand->bits_per_cell         = nand_onfi->onfi_chip.bits_per_cell;
     nand->programs_per_page     = nand_onfi->onfi_chip.programs_per_page;
 
-    //TODO: nand_onfi->onfi_prop init
+    nand->standard_type         = NAND_STD_ONFI;
 
     nand->init_done             = true;
 

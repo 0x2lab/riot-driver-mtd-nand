@@ -39,6 +39,7 @@ int nand_init(nand_t* const nand, nand_params_t* const params) {
         return NAND_INIT_ERROR;
     }
 
+    nand->standard_type = NAND_STD_UNKNWOWN;
     nand->params = *params;
     nand_set_pin_default(nand);
 

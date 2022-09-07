@@ -1,0 +1,18 @@
+# Copyright (c) 2022 Jongmin Kim <jmkim@pukyong.ac.kr>
+#
+# This file is subject to the terms and conditions of the GNU Lesser
+# General Public License v2.1. See the file LICENSE in the top level
+# directory for more details.
+#
+
+config MODULE_NAND_SAMSUNG
+    bool "SAMSUNG NAND"
+    depends on HAS_NAND
+    depends on TEST_KCONFIG
+    select MODULE_NAND
+    select MODULE_FMT 
+
+config HAS_NAND_SAMSUNG
+    bool
+    help
+      Indicates that a SAMSUNG NAND is present.
