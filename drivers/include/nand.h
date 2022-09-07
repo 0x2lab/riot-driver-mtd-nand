@@ -91,15 +91,10 @@ typedef enum {
     NAND_STD_SAMSUNG
 } nand_std_t;
 
-typedef struct _nand_params_t             nand_params_t;
-typedef struct _nand_chip_t               nand_chip_t;
-typedef struct _nand_prop_t               nand_prop_t;
-typedef struct _nand_t                    nand_t;
-
 /**
  * @brief   nand device params
  */
-struct _nand_params_t {
+typedef struct {
     gpio_t ce0;             /**< pin connected to the I/O chip 0 enable */
     gpio_t ce1;             /**< pin that controls chip 1 enable */
     gpio_t ce2;             /**< pin that controls chip 2 enable */
@@ -129,9 +124,9 @@ struct _nand_params_t {
     gpio_t io13;            /**< pin connected to the I/O 13 (only for 16-bit data access) */
     gpio_t io14;            /**< pin connected to the I/O 14 (only for 16-bit data access) */
     gpio_t io15;            /**< pin connected to the I/O 15 (only for 16-bit data access) */
-};
+} nand_params_t;
 
-struct __attribute__ ((packed)) _nand_t {
+typedef struct __attribute__ ((packed)) _nand_t {
     bool                init_done;                 /**< set to true once the init procedure completed successfully */
 
     uint8_t             nand_id[NAND_MAX_ID_SIZE];
@@ -161,7 +156,7 @@ struct __attribute__ ((packed)) _nand_t {
 
     nand_std_t          standard_type;
     nand_params_t       params;
-};
+} nand_t;
 
 int nand_init(nand_t* const nand, nand_params_t* const params);
 
