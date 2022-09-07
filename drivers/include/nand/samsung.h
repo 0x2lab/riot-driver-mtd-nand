@@ -50,7 +50,7 @@ typedef struct {
     uint16_t serial_access_min_timings_ns;
 } nand_samsung_chip_t;
 
-typedef struct __attribute__ ((packed)) _nand_samsung_t {
+typedef struct {
     nand_t                  nand;
     nand_samsung_chip_t     samsung_chip;
 } nand_samsung_t;

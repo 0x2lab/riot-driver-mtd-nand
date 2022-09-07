@@ -126,7 +126,7 @@ typedef struct {
     gpio_t io15;            /**< pin connected to the I/O 15 (only for 16-bit data access) */
 } nand_params_t;
 
-typedef struct __attribute__ ((packed)) _nand_t {
+typedef struct {
     bool                init_done;                 /**< set to true once the init procedure completed successfully */
 
     uint8_t             nand_id[NAND_MAX_ID_SIZE];
