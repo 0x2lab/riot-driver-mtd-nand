@@ -131,7 +131,7 @@ struct _nand_params_t {
     gpio_t io15;            /**< pin connected to the I/O 15 (only for 16-bit data access) */
 };
 
-struct _nand_t {
+struct __attribute__ ((packed)) _nand_t {
     bool                init_done;                 /**< set to true once the init procedure completed successfully */
 
     uint8_t             nand_id[NAND_MAX_ID_SIZE];
