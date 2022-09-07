@@ -157,14 +157,14 @@ void nand_samsung_read_chip(nand_samsung_t* const nand_samsung, nand_samsung_chi
     }
 
     switch(nand->nand_id[4] & 0x70) {
-        case 0x00: { chip->data_blocks_per_plane = 8192U / chip->data_bytes_per_block * 1024U; } break; /** (64 / 8 * 1024) */
-        case 0x10: { chip->data_blocks_per_plane = 16384U / chip->data_bytes_per_block * 1024U; } break; /** (128 / 8 * 1024) */
-        case 0x20: { chip->data_blocks_per_plane = 32768U / chip->data_bytes_per_block * 1024U; } break; /** (256 / 8 * 1024) */
-        case 0x30: { chip->data_blocks_per_plane = 65536U / chip->data_bytes_per_block * 1024U; } break; /** (512 / 8 * 1024) */
-        case 0x40: { chip->data_blocks_per_plane = 131072U / chip->data_bytes_per_block * 1024U; } break; /** (1024 / 8 * 1024) */
-        case 0x50: { chip->data_blocks_per_plane = 262144U / chip->data_bytes_per_block * 1024U; } break; /** (2048 / 8 * 1024) */
-        case 0x60: { chip->data_blocks_per_plane = 524288U / chip->data_bytes_per_block * 1024U; } break; /** (4096 / 8 * 1024) */
-        case 0x70: { chip->data_blocks_per_plane = 1048576U / chip->data_bytes_per_block * 1024U; } break; /** (8192 / 8 * 1024) */
+        case 0x00: { chip->data_blocks_per_plane = 8192U / chip->data_bytes_per_block * 1024U; } break; /** (64 / 8 * 1024 * 1024) */
+        case 0x10: { chip->data_blocks_per_plane = 16384U / chip->data_bytes_per_block * 1024U; } break; /** (128 / 8 * 1024 * 1024) */
+        case 0x20: { chip->data_blocks_per_plane = 32768U / chip->data_bytes_per_block * 1024U; } break; /** (256 / 8 * 1024 * 1024) */
+        case 0x30: { chip->data_blocks_per_plane = 65536U / chip->data_bytes_per_block * 1024U; } break; /** (512 / 8 * 1024 * 1024) */
+        case 0x40: { chip->data_blocks_per_plane = 131072U / chip->data_bytes_per_block * 1024U; } break; /** (1024 / 8 * 1024 * 1024) */
+        case 0x50: { chip->data_blocks_per_plane = 262144U / chip->data_bytes_per_block * 1024U; } break; /** (2048 / 8 * 1024 * 1024) */
+        case 0x60: { chip->data_blocks_per_plane = 524288U / chip->data_bytes_per_block * 1024U; } break; /** (4096 / 8 * 1024 * 1024) */
+        case 0x70: { chip->data_blocks_per_plane = 1048576U / chip->data_bytes_per_block * 1024U; } break; /** (8192 / 8 * 1024 * 1024) */
     }
 
 }
