@@ -85,7 +85,7 @@ size_t nand_run_cmd_chains(nand_t* const nand, const nand_cmd_t* const cmd, nand
         }
 
         nand_wait(timings->pre_delay_ns);
-        
+
         switch(cycles_type) {
         case NAND_CMD_TYPE_CMD_WRITE:
         case NAND_CMD_TYPE_ADDR_WRITE:

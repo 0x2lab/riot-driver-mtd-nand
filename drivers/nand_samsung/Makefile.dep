@@ -1,2 +1,2 @@
 USEMODULE += nand
-USEMODULE += fmt 
+USEMODULE += fmt
