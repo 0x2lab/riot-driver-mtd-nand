@@ -1,3 +1,12 @@
+/*
+ * Copyright (C) 2022-2023 Jongmin Kim <jmkim@pukyong.ac.kr>
+ *               2022-2023 double O Co., Ltd.
+ *
+ * This file is subject to the terms and conditions of the GNU Lesser
+ * General Public License v2.1. See the file LICENSE in the top level
+ * directory for more details.
+ */
+
 #ifndef NAND_SAMSUNG_TIMING_H
 #define NAND_SAMSUNG_TIMING_H
 

@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2022 Jongmin Kim <jmkim@pukyong.ac.kr>
+ * Copyright (C) 2022-2023 Jongmin Kim <jmkim@pukyong.ac.kr>
+ *               2022-2023 double O Co., Ltd.
  *
 _* This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
