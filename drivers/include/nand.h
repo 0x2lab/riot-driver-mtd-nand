@@ -96,10 +96,14 @@ typedef enum {
  * @brief   nand device params
  */
 typedef struct {
-    gpio_t ce0;             /**< pin connected to the I/O chip 0 enable */
+    gpio_t ce0;             /**< pin that controls chip 0 enable */
     gpio_t ce1;             /**< pin that controls chip 1 enable */
     gpio_t ce2;             /**< pin that controls chip 2 enable */
     gpio_t ce3;             /**< pin that controls chip 3 enable */
+    gpio_t ce4;             /**< pin that controls chip 4 enable */
+    gpio_t ce5;             /**< pin that controls chip 5 enable */
+    gpio_t ce6;             /**< pin that controls chip 6 enable */
+    gpio_t ce7;             /**< pin that controls chip 7 enable */
     gpio_t rb0;             /**< pin connected to the chip 0 beady/busy */
     gpio_t rb1;             /**< pin connected to the chip 1 ready/busy */
     gpio_t rb2;             /**< pin connected to the chip 2 ready/busy */
@@ -266,6 +270,26 @@ static inline void nand_set_chip_enable(const nand_t* const nand, const uint8_t 
             gpio_write(nand->params.ce3, 0);
         }
         break;
+    case 4:
+        {
+            gpio_write(nand->params.ce4, 0);
+        }
+        break;
+    case 5:
+        {
+            gpio_write(nand->params.ce5, 0);
+        }
+        break;
+    case 6:
+        {
+            gpio_write(nand->params.ce6, 0);
+        }
+        break;
+    case 7:
+        {
+            gpio_write(nand->params.ce7, 0);
+        }
+        break;
     }
 }
 
@@ -289,6 +313,26 @@ static inline void nand_set_chip_disable(const nand_t* const nand, const uint8_t
     case 3:
         {
             gpio_write(nand->params.ce3, 1);
+        }
+        break;
+    case 4:
+        {
+            gpio_write(nand->params.ce4, 1);
+        }
+        break;
+    case 5:
+        {
+            gpio_write(nand->params.ce5, 1);
+        }
+        break;
+    case 6:
+        {
+            gpio_write(nand->params.ce6, 1);
+        }
+        break;
+    case 7:
+        {
+            gpio_write(nand->params.ce7, 1);
         }
         break;
     }

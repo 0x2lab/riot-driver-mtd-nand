@@ -277,6 +277,7 @@ size_t nand_read_io(const nand_t* const nand, uint8_t out_data[2], const uint8_t
 void nand_set_ctrl_pin(const nand_t* const nand) {
     gpio_init(nand->params.ce0, GPIO_OUT);
     gpio_init(nand->params.rb0, GPIO_IN);
+    /** TODO: Verify rb pin related with param lun_count */
 
     if(nand->lun_count > 0) {
         gpio_init(nand->params.ce1, GPIO_OUT);
@@ -291,6 +292,22 @@ void nand_set_ctrl_pin(const nand_t* const nand) {
     if(nand->lun_count > 2) {
         gpio_init(nand->params.ce3, GPIO_OUT);
         gpio_init(nand->params.rb3, GPIO_IN);
+    }
+
+    if(nand->lun_count > 3) {
+        gpio_init(nand->params.ce4, GPIO_OUT);
+    }
+
+    if(nand->lun_count > 4) {
+        gpio_init(nand->params.ce5, GPIO_OUT);
+    }
+
+    if(nand->lun_count > 5) {
+        gpio_init(nand->params.ce6, GPIO_OUT);
+    }
+
+    if(nand->lun_count > 6) {
+        gpio_init(nand->params.ce7, GPIO_OUT);
     }
 
     gpio_init(nand->params.re, GPIO_OUT);
